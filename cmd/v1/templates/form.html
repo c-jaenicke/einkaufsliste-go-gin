@@ -1,0 +1,30 @@
+{{template "header.html"}}
+<h2 class="title2">Neuen Eintrag anlegen</h2>
+<form action="/item/new" method="post" enctype="multipart/form-data">
+
+    <label for="name" class="form-label">Artikel-Name:</label>
+    <br>
+    <input type="text" name="name" id="name" class="form-input" maxlength="100" placeholder="Apfel, Paprika, Gurke"
+           required>
+
+    <br>
+    <br>
+
+    <label for="note" class="form-label">Notiz:</label>
+    <br>
+    <textarea name="note" id="note" class="form-input" maxlength="100" placeholder="Nur Bio bitte."></textarea>
+
+    <br>
+    <br>
+
+    <label for="amount" class="form-label">Menge:</label>
+    <br>
+    <input type="number" name="amount" id="amount" class="form-input" value="1" min="1">
+
+    <br>
+    <br>
+
+    <input type="submit" value="Speichern" class="form-button" required>
+
+</form>
+{{template "footer.html"}}

@@ -1,0 +1,117 @@
+{{template "header.html"}}
+<h2 class="title2">Artikel Löschen</h2>
+
+<h3>Zu Besorgen: {{ len .newItems }}</h3>
+
+{{ if .newItems }}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Notiz</th>
+        <th>Menge</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {{ range .newItems }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Note }}</td>
+        <td>{{ .Amount }}</td>
+        <td>
+            <form action="/item/{{ .ID }}/update" method="post">
+                <input type="submit" value="Eingekauft!">
+            </form>
+        </td>
+        <td>
+            <form action="/item/{{ .ID }}/delete" method="post">
+                <input type="submit" value="Löschen">
+            </form>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+{{else}}
+<p>Keine neuen Einträge!</p>
+{{end}}
+
+<hr class="page-hr">
+<h3>Alte Einträge</h3>
+
+{{ if .oldItems }}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Notiz</th>
+        <th>Menge</th>
+        <th></th>
+    </tr>
+    {{ range .oldItems }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Note }}</td>
+        <td>{{ .Amount }}</td>
+        <td>
+            <form action="/item/{{ .ID }}/update" method="post">
+                <input type="submit" value="Nochmal Kaufen!">
+            </form>
+        </td>
+        <td>
+            <form action="/item/{{ .ID }}/delete" method="post">
+                <input type="submit" value="Löschen">
+            </form>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+{{else}}
+<p>Keine alten Einträge!</p>
+{{end}}
+
+<hr class="page-hr">
+<h3>Gelöschte Einträge</h3>
+
+{{ if .deletedItems }}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Notiz</th>
+        <th>Menge</th>
+        <th></th>
+    </tr>
+    {{ range .deletedItems }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Note }}</td>
+        <td>{{ .Amount }}</td>
+        <td>
+            <form action="/item/{{ .ID }}/update" method="post">
+                <input type="submit" value="Nochmal Kaufen!">
+            </form>
+        </td>
+        <td>
+            <form action="/item/{{ .ID }}/delete" method="post">
+                <input type="submit" value="Wiederherstelllen">
+            </form>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+{{else}}
+<p>Keine gelöschten Einträge!</p>
+{{end}}
+
+<hr class="page-hr">
+
+<h3>DEBUG</h3>
+
+{{ if .itemList }}
+<ol>
+    {{ range .itemList }}
+    <li>{{.}}</li>
+    {{end}}
+</ol>
+{{else}}
+<p>No entries</p>
+{{end}}
+
+{{template "footer.html"}}

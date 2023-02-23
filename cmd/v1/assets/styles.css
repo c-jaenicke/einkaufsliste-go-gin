@@ -1,0 +1,124 @@
+:root {
+    --celtic-blue: #0d68d1;
+    --capri: #3ebbf1;
+    --dark-turquoise: #00d0dd;
+    font-family: "monospace";
+}
+
+.container {
+    margin: 0;
+    /*max-width: 75rem;*/
+    /*padding-left: 2rem;*/
+    /*padding-right: 2rem;*/
+    /*margin-left:  auto;*/
+    /*margin-right: auto;*/
+}
+
+.title {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--celtic-blue);
+    text-decoration: none;
+}
+
+.title2 {
+    margin: 1rem 0rem 1rem;
+    color: var(--celtic-blue);
+    text-decoration: none;
+}
+
+hr {
+    color: var(--capri);
+}
+
+.page-hr {
+    color: var(--capri);
+    width: 50%;
+}
+
+/*TABLE SETTINGS*/
+
+table {
+    width: 100%;
+    margin: 0 0 2rem;
+    border-collapse: collapse;
+}
+
+td,
+th {
+    padding: .25rem .5rem;
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+    border-bottom-width: 1px;
+}
+
+th {
+    text-align: left;
+}
+
+thead th {
+    border-bottom-color: black;
+}
+
+
+/*TOP NAVIGATION BAR*/
+
+.topnav {
+    background-color: var(--celtic-blue);
+    overflow: hidden;
+    width: 100%;
+}
+
+.topnav a {
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 10px 10px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.topnav a:hover {
+    background-color: var(--capri);
+    color: black;
+}
+
+.topnav a.active {
+    background-color: var(--dark-turquoise);
+    color: white;
+}
+
+.topnav a.home {
+    font-weight: bold;
+}
+
+/*FORM SETTINGS*/
+
+.form-button {
+    min-width: 220px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem;
+    background-color: var(--celtic-blue);
+    display: inline-block;
+    border-radius: 10px;
+    color: white;
+}
+
+.form-button button:hover,
+button:active {
+    background-color: var(--capri);
+}
+
+.form-input {
+    border-radius: 10px;
+    height: 2rem;
+    /*font-size: 1rem;*/
+
+}
+
+.form-label {
+    /*font-size: 1.5rem;*/
+}

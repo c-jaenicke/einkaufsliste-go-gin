@@ -1,0 +1,59 @@
+{{template "header.html"}}
+<h2 class="title2">Einkaufsliste</h2>
+
+<h3>Zu Besorgen: {{ len .newItems }}</h3>
+
+{{ if .newItems }}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Notiz</th>
+        <th>Menge</th>
+        <th></th>
+    </tr>
+    {{ range .newItems }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Note }}</td>
+        <td>{{ .Amount }}</td>
+        <td>
+            <form action="/item/{{ .ID }}/update" method="post">
+                <input type="submit" value="Eingekauft!">
+            </form>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+{{else}}
+<p>Es muss nichts gekauft werden!</p>
+{{end}}
+
+<hr class="page-hr">
+<h3>Alte Einkäufe</h3>
+
+{{ if .oldItems }}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Notiz</th>
+        <th>Menge</th>
+        <th></th>
+    </tr>
+    {{ range .oldItems }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Note }}</td>
+        <td>{{ .Amount }}</td>
+        <td>
+            <form action="/item/{{ .ID }}/update" method="post">
+                <input type="submit" value="Nochmal Kaufen!">
+            </form>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+{{else}}
+<p>Keine alten Einträge!</p>
+{{end}}
+
+{{template "footer.html"}}
