@@ -18,18 +18,18 @@
         <td>{{ .Amount }}</td>
         <td>
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="submit" value="Eingekauft!">
+                <input type="submit" value="Eingekauft!" class="form-button-table">
             </form>
         </td>
     </tr>
     {{ end }}
 </table>
 {{else}}
-<p>Es muss nichts gekauft werden!</p>
+<p>Keine Einträge gefunden!</p>
 {{end}}
 
 <hr class="page-hr">
-<h3>Alte Einkäufe</h3>
+<h3>Letzte Einkäufe</h3>
 
 {{ if .oldItems }}
 <table>
@@ -46,14 +46,14 @@
         <td>{{ .Amount }}</td>
         <td>
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="submit" value="Nochmal Kaufen!">
+                <input type="submit" value="Nochmal Kaufen!" class="form-button-table">
             </form>
         </td>
     </tr>
     {{ end }}
 </table>
 {{else}}
-<p>Keine alten Einträge!</p>
+<p>Keine Einträge gefunden!</p>
 {{end}}
 
 {{template "footer.html"}}

@@ -85,7 +85,7 @@ thead th {
 }
 
 .topnav a.active {
-    background-color: var(--dark-turquoise);
+    background-color: var(--capri);
     color: white;
 }
 
@@ -96,29 +96,52 @@ thead th {
 /*FORM SETTINGS*/
 
 .form-button {
-    min-width: 220px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 1rem;
     padding: 0.5rem;
+    min-width: 200px;
+    text-align: center;
+
+    text-decoration: none;
     background-color: var(--celtic-blue);
-    display: inline-block;
-    border-radius: 10px;
     color: white;
+    font-size: 1rem;
+
+    border-radius: 7px;
+    border-width: 1px;
 }
 
-.form-button button:hover,
-button:active {
+.form-button-table {
+    padding: 0.2rem;
+    text-align: center;
+
+    text-decoration: none;
+    background-color: var(--celtic-blue);
+    color: white;
+
+    border-radius: 7px;
+    border-width: 1px;
+}
+
+.form-button:hover,
+.form-button:active,
+.form-button-table:hover,
+.form-button-table:active {
     background-color: var(--capri);
+    color: black;
 }
 
 .form-input {
-    border-radius: 10px;
+    border-radius: 7px;
     height: 2rem;
-    /*font-size: 1rem;*/
-
+    font-size: 1rem;
 }
 
 .form-label {
     /*font-size: 1.5rem;*/
+}
+
+/*FOOTER SETTINGS*/
+
+.footer {
+    color: var(--celtic-blue);
+    text-align: center;
 }
