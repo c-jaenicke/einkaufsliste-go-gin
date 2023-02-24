@@ -110,6 +110,11 @@ func UpdateItemStatus(id string) {
 	}
 }
 
+func ChangeItem(id, name, note string, amount int) {
+	query := fmt.Sprintf("UPDATE items SET name = '%s', note = '%s', amount = '%d' WHERE id = '%s'", name, note, amount, id)
+	executeQuery(query)
+}
+
 // DeleteItemStatus changes the status of an item from new or old to deleted and from deleted to old.
 // Used on managing page for removing items.
 func DeleteItemStatus(id string) {
