@@ -1,5 +1,5 @@
 {{template "header.html"}}
-<h2 class="title2">Artikel Löschen</h2>
+<h2 class="title2">Artikel Verwalten</h2>
 
 <h3>Zu Besorgen: {{ len .newItems }}</h3>
 
@@ -11,31 +11,37 @@
         <th>Menge</th>
         <th></th>
         <th></th>
+        <th></th>
     </tr>
     {{ range .newItems }}
     <tr>
         <td>{{ .Name }}</td>
         <td>{{ .Note }}</td>
         <td>{{ .Amount }}</td>
-        <td>
+        <td class="table-icon">
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="submit" value="Eingekauft!">
+                <input type="image" src="/images/check-square-white.svg" border="0" alt="Eingekauft" class="form-button-table-icon form-button-table">
             </form>
         </td>
-        <td>
+        <td class="table-icon">
+            <a href="/item/{{ .ID }}/change">
+                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+            </a>
+        </td>
+        <td class="table-icon">
             <form action="/item/{{ .ID }}/delete" method="post">
-                <input type="submit" value="Löschen">
+                <input type="image" src="/images/trash-2-white.svg" border="0" alt="Löschen" class="form-button-table-icon form-button-table">
             </form>
         </td>
     </tr>
     {{ end }}
 </table>
 {{else}}
-<p>Keine neuen Einträge!</p>
+<p>Keine Einträge gefunden!</p>
 {{end}}
 
 <hr class="page-hr">
-<h3>Alte Einträge</h3>
+<h3>Letzte Einkäufe</h3>
 
 {{ if .oldItems }}
 <table>
@@ -43,6 +49,8 @@
         <th>Name</th>
         <th>Notiz</th>
         <th>Menge</th>
+        <th></th>
+        <th></th>
         <th></th>
     </tr>
     {{ range .oldItems }}
@@ -52,19 +60,24 @@
         <td>{{ .Amount }}</td>
         <td>
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="submit" value="Nochmal Kaufen!">
+                <input type="image" src="/images/arrow-up-white.svg" border="0" alt="Nochmal kaufen" class="form-button-table-icon form-button-table">
             </form>
         </td>
         <td>
+            <a href="/item/{{ .ID }}/change">
+                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+            </a>
+        </td>
+        <td class="table-icon">
             <form action="/item/{{ .ID }}/delete" method="post">
-                <input type="submit" value="Löschen">
+                <input type="image" src="/images/trash-2-white.svg" border="0" alt="Löschen" class="form-button-table-icon form-button-table">
             </form>
         </td>
     </tr>
     {{ end }}
 </table>
 {{else}}
-<p>Keine alten Einträge!</p>
+<p>Keine Einträge gefunden!</p>
 {{end}}
 
 <hr class="page-hr">
@@ -73,24 +86,27 @@
 {{ if .deletedItems }}
 <table>
     <tr>
+        <th>ID</th>
         <th>Name</th>
         <th>Notiz</th>
         <th>Menge</th>
         <th></th>
+        <th></th>
     </tr>
     {{ range .deletedItems }}
     <tr>
+        <td>{{ .ID }}</td>
         <td>{{ .Name }}</td>
         <td>{{ .Note }}</td>
         <td>{{ .Amount }}</td>
         <td>
-            <form action="/item/{{ .ID }}/update" method="post">
-                <input type="submit" value="Nochmal Kaufen!">
-            </form>
+            <a href="/item/{{ .ID }}/change">
+                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+            </a>
         </td>
-        <td>
+        <td class="table-icon">
             <form action="/item/{{ .ID }}/delete" method="post">
-                <input type="submit" value="Wiederherstelllen">
+                <input type="image" src="/images/refresh-cw-white.svg" border="0" alt="Wiederherstellen" class="form-button-table-icon form-button-table">
             </form>
         </td>
     </tr>
