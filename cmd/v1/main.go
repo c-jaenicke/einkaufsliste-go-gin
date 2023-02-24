@@ -17,12 +17,15 @@ func main() {
 	postgres.CreateConnection()
 	postgres.CreateTable()
 
+	// uncomment line to switch to release mode
+	// gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.SetFuncMap(template.FuncMap{
 		"upper": strings.ToUpper,
 	})
 	router.Static("/assets", "./assets")
 	router.Static("/images", "./images")
+	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
 	router.LoadHTMLGlob("templates/*.html")
 
 	// index page, list of items to buy and old items
