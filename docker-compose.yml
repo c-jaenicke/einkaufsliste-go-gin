@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: shopping-list
+    image: shopping:latest
+    restart: unless-stopped
+    #expose:
+    #  - 8080
+    ports:
+      - 8080:8080
+    environment:
+      - POSTGRES_URL="postgresql://test:asdasd@172.22.0.2:5432/shopping"
+
+# postgresql database
+  db:
+    container_name: postgres-test
+    image: postgres:latest
+    restart: unless-stopped
+    hostname: postgres-test
+    environment:
+      - POSTGRES_PASSWORD=asdasd
+      - POSTGRES_USER=test
+      - POSTGRES_DB=shopping
+    volumes:
+      - postgres-test-volume:/var/lib/postgresql/data
+
+volumes:
+  postgres-test-volume:

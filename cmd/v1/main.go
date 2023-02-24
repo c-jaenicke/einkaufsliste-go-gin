@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"
+	"shopping-list/pkg/logging"
 	"shopping-list/pkg/postgres"
 	"strconv"
 	"strings"
@@ -18,7 +19,7 @@ func main() {
 	postgres.CreateTable()
 
 	// uncomment line to switch to release mode
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.SetFuncMap(template.FuncMap{
 		"upper": strings.ToUpper,
@@ -26,7 +27,7 @@ func main() {
 	router.Static("/assets", "./assets")
 	router.Static("/images", "./images")
 	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
-	router.LoadHTMLGlob("templates/*.html")
+	router.LoadHTMLGlob("./templates/*.html")
 
 	// index page, list of items to buy and old items
 	router.GET("/", func(c *gin.Context) {
@@ -95,5 +96,6 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/manage")
 	})
 
-	router.Run("localhost:8080")
+	logging.LogInfo("##### Starting gin`")
+	router.Run(":8080")
 }
