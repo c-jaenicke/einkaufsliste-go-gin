@@ -1,7 +1,7 @@
 {{template "header.html"}}
 <h2 class="title2">Einkaufsliste</h2>
 
-<h3>Zu Besorgen: {{ len .newItems }}</h3>
+<h3>Zu Besorgen: {{ len .newItems }} Artikel</h3>
 
 {{ if .newItems }}
 <table>
@@ -10,16 +10,22 @@
         <th>Notiz</th>
         <th>Menge</th>
         <th></th>
+        <th></th>
     </tr>
     {{ range .newItems }}
     <tr>
         <td>{{ .Name }}</td>
         <td>{{ .Note }}</td>
         <td>{{ .Amount }}</td>
-        <td>
+        <td class="table-icon">
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="image" src="./images/check-square-white.svg" border="0" alt="Eingekauft" class="form-button-table-icon form-button-table">
+                <input type="image" src="/images/check-square-white.svg" border="0" alt="Eingekauft" class="form-button-table-icon form-button-table">
             </form>
+        </td>
+        <td class="table-icon">
+            <a href="/item/{{ .ID }}/change">
+                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+            </a>
         </td>
     </tr>
     {{ end }}
@@ -38,6 +44,7 @@
         <th>Notiz</th>
         <th>Menge</th>
         <th></th>
+        <th></th>
     </tr>
     {{ range .oldItems }}
     <tr>
@@ -46,8 +53,13 @@
         <td>{{ .Amount }}</td>
         <td>
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="image" src="./images/arrow-up-white.svg" border="0" alt="Nochmal kaufen" class="form-button-table-icon form-button-table">
+                <input type="image" src="/images/arrow-up-white.svg" border="0" alt="Nochmal kaufen" class="form-button-table-icon form-button-table">
             </form>
+        </td>
+        <td>
+            <a href="/item/{{ .ID }}/change">
+                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+            </a>
         </td>
     </tr>
     {{ end }}

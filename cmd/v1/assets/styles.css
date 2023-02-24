@@ -1,8 +1,34 @@
 :root {
+    --white: #fffdfa;
+    --black: #000000;
+
+    --pale-cerulean: #8db6d4;
+    --prussian-blue: #05344d;
+
+    --firebrick: #c02121;
+    --cinnabar: #eb4833;
+
+    --amazon: #2a794e;
+    --ocean-green: #67cb94;
+
+    --citrine: #e2d515;
+    --canary: #ffe149;
+
     --celtic-blue: #0d68d1;
     --capri: #3ebbf1;
     --dark-turquoise: #00d0dd;
-    font-family: "monospace";
+
+
+    --tuscan-red: #814b59;
+    --china-rose: #ac5d86;
+
+    --cool-grey: #8990aa;
+    --gainsboro: #dcdcdc;
+
+    --black-coffe: #352d28;
+    --light-gray: #d0c8c8;
+
+    font-family: Arial, Helvetica ,"monospace";
 }
 
 .container {
@@ -55,6 +81,10 @@ th {
 
 th {
     text-align: left;
+}
+
+.table-icon {
+    padding: 0.2rem 0.5rem;
 }
 
 thead th {
