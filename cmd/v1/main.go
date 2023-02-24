@@ -13,8 +13,9 @@ import (
 func main() {
 	fmt.Println("asd")
 
-	conn := postgres.CreateConnection()
-	postgres.CreateTable(conn)
+	// := postgres.CreateConnection()
+	postgres.CreateConnection()
+	postgres.CreateTable()
 
 	router := gin.Default()
 	router.SetFuncMap(template.FuncMap{
@@ -25,10 +26,10 @@ func main() {
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"content":  "This is an index page...",
-			"itemList": postgres.GetAllItems(conn),
-			"newItems": postgres.GetNewItems(conn),
-			"oldItems": postgres.GetOldItems(conn),
+			"itemList":     postgres.GetItems("%"),
+			"newItems":     postgres.GetItems("new"),
+			"oldItems":     postgres.GetItems("old"),
+			"deletedItems": postgres.GetItems("deleted"),
 		})
 	})
 
@@ -43,7 +44,7 @@ func main() {
 		note := c.PostForm("note")
 		amount, _ := strconv.Atoi(c.PostForm("amount"))
 		fmt.Println(name, note, amount)
-		postgres.InsertItem(name, note, amount, conn)
+		postgres.InsertItem(name, note, amount)
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
@@ -51,31 +52,30 @@ func main() {
 		id := c.Params.ByName("id")
 		c.HTML(http.StatusOK, "details.html", gin.H{
 			"content": "This is an about page...",
-			"item":    postgres.GetItem(id, conn),
+			"item":    postgres.GetItem(id),
 		})
 	})
 
 	router.POST("/item/:ID/update", func(c *gin.Context) {
 		//id := c.PostForm("ID")
 		id := c.Params.ByName("ID")
-		postgres.UpdateItemStatus(id, conn)
+		postgres.UpdateItemStatus(id)
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
 	router.POST("/item/:ID/delete", func(c *gin.Context) {
 		//id := c.PostForm("ID")
 		id := c.Params.ByName("ID")
-		postgres.DeleteItemStatus(id, conn)
+		postgres.DeleteItemStatus(id)
 		c.Redirect(http.StatusMovedPermanently, "/manage")
 	})
 
 	router.GET("/manage", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "manage.html", gin.H{
-			"content":      "This is an index page...",
-			"itemList":     postgres.GetAllItems(conn),
-			"newItems":     postgres.GetNewItems(conn),
-			"oldItems":     postgres.GetOldItems(conn),
-			"deletedItems": postgres.GetDeletedItems(conn),
+			"itemList":     postgres.GetItems("%"),
+			"newItems":     postgres.GetItems("new"),
+			"oldItems":     postgres.GetItems("old"),
+			"deletedItems": postgres.GetItems("deleted"),
 		})
 	})
 

@@ -11,14 +11,17 @@ import (
 	"shopping-list/pkg/logging"
 )
 
-// CreateConnection create database connection
-func CreateConnection() pgxpool.Pool {
-	logging.LogInfo("Attempting to connect to database")
+var conn *pgxpool.Pool
 
+// CreateConnection create database *connection
+func CreateConnection() {
+	logging.LogInfo("Attempting to *connect to database")
+
+	var err error
 	//conn, err := pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
-	conn, err := pgxpool.New(context.Background(), "postgresql://test:asdasd@172.22.0.2:5432/shopping")
+	conn, err = pgxpool.New(context.Background(), "postgresql://test:asdasd@172.22.0.2:5432/shopping")
 	if err != nil {
-		logging.LogPanic("Failed to connect to database", err)
+		logging.LogPanic("Failed to *connect to database", err)
 		os.Exit(1)
 	}
 
@@ -29,12 +32,11 @@ func CreateConnection() pgxpool.Pool {
 	}
 
 	logging.LogInfo("Connection to database successful")
-
-	return *conn
 }
 
-// PingDatabase send ping to database
-func PingDatabase(conn pgxpool.Pool) bool {
+// PingDatabase sends ping to database to test if connection is still up.
+// Returns true if connection is still up.
+func PingDatabase() bool {
 	pingErr := conn.Ping(context.Background())
 	if pingErr != nil {
 		logging.LogError("Ping to database failed", pingErr)
@@ -45,30 +47,15 @@ func PingDatabase(conn pgxpool.Pool) bool {
 	}
 }
 
-func InsertItem(name string, note string, amount int, conn pgxpool.Pool) {
-	message := fmt.Sprintf("Inserting item ", name, note, amount)
-	logging.LogInfo(message)
-
-	var item = item.Item{Name: name,
-		Note:   note,
-		Amount: amount,
-		Status: "new",
-	}
-
-	query := fmt.Sprintf("INSERT INTO items (name, note, amount, status) VALUES ("+
-		"'%s',"+
-		"'%s',"+
-		"'%d',"+
-		"'%s'"+
-		");", item.Name, item.Note, item.Amount, item.Status)
-
-	logging.LogInfo(query)
-	executeQuery(query, conn)
+// InsertItem inserts a new item into the database.
+func InsertItem(name string, note string, amount int) {
+	query := fmt.Sprintf("INSERT INTO items (name, note, amount, status) VALUES ('%s','%s','%d','new');", name, note, amount)
+	executeQuery(query)
 }
 
 // CreateTable create new table for given channel
 // runs at start to make sure tables exists
-func CreateTable(conn pgxpool.Pool) {
+func CreateTable() {
 	query := "create table if not exists items (" +
 		"id SERIAL PRIMARY KEY," +
 		"name VARCHAR(100) NOT NULL," +
@@ -77,11 +64,11 @@ func CreateTable(conn pgxpool.Pool) {
 		"status VARCHAR(10)" +
 		");"
 
-	executeQuery(query, conn)
+	executeQuery(query)
 }
 
-// executeQuery executes a query using a connection from the pool
-func executeQuery(query string, conn pgxpool.Pool) {
+// executeQuery executes a query using a *connection from the pool
+func executeQuery(query string) {
 	_, err := conn.Exec(context.Background(), query)
 	if err != nil {
 		logging.LogError("Failed to execute query", err)
@@ -91,132 +78,72 @@ func executeQuery(query string, conn pgxpool.Pool) {
 	}
 }
 
-func GetAllItems(conn pgxpool.Pool) []item.Item {
-	query := "select * from items"
-	rows, err := conn.Query(context.Background(), query)
-	defer rows.Close()
-	if err != nil {
-		logging.LogWarning("Failed to query for items")
-	}
-
-	var items []item.Item
-	for rows.Next() {
-		var item item.Item
-		err := rows.Scan(&item.ID, &item.Name, &item.Note, &item.Amount, &item.Status)
-		if err != nil {
-			logging.LogWarning("Failed to scann row: " + err.Error())
-		}
-
-		items = append(items, item)
-	}
-
-	return items
-}
-
-func GetNewItems(conn pgxpool.Pool) []item.Item {
-	query := "select * from items where status = 'new'"
-	rows, err := conn.Query(context.Background(), query)
-	defer rows.Close()
-	if err != nil {
-		logging.LogWarning("Failed to query for items")
-	}
-
-	var items []item.Item
-	for rows.Next() {
-		var item item.Item
-		err := rows.Scan(&item.ID, &item.Name, &item.Note, &item.Amount, &item.Status)
-		if err != nil {
-			logging.LogWarning("Failed to scann row: " + err.Error())
-		}
-
-		items = append(items, item)
-	}
-
-	return items
-}
-
-func GetOldItems(conn pgxpool.Pool) []item.Item {
-	query := "select * from items where status = 'old'"
-	rows, err := conn.Query(context.Background(), query)
-	defer rows.Close()
-	if err != nil {
-		logging.LogWarning("Failed to query for items")
-	}
-
-	var items []item.Item
-	for rows.Next() {
-		var item item.Item
-		err := rows.Scan(&item.ID, &item.Name, &item.Note, &item.Amount, &item.Status)
-		if err != nil {
-			logging.LogWarning("Failed to scann row: " + err.Error())
-		}
-
-		items = append(items, item)
-	}
-
-	return items
-}
-
-func GetItem(id string, conn pgxpool.Pool) item.Item {
+// GetItem returns single item by given ID.
+func GetItem(id string) item.Item {
 	query := fmt.Sprintf("select * from items where id = %s", id)
 	rows, err := conn.Query(context.Background(), query)
 	if err != nil {
 		logging.LogWarning("Failed to find item with id " + id)
 	}
 
-	var item item.Item
+	var i item.Item
 	for rows.Next() {
-		err := rows.Scan(&item.ID, &item.Name, &item.Note, &item.Amount, &item.Status)
+		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status)
 		if err != nil {
 			logging.LogWarning("Failed to scann row: " + err.Error())
 		}
 	}
 
-	return item
+	return i
 }
 
-func UpdateItemStatus(id string, conn pgxpool.Pool) {
-	item := GetItem(id, conn)
+// UpdateItemStatus changes status of an item from old to new and other way around.
+func UpdateItemStatus(id string) {
+	i := GetItem(id)
 
-	if item.Status == "new" {
+	if i.Status == "new" {
 		query := fmt.Sprintf("UPDATE items SET status = 'old' WHERE id = '%s'", id)
-		executeQuery(query, conn)
-	} else if item.Status == "old" {
+		executeQuery(query)
+	} else if i.Status == "old" {
 		query := fmt.Sprintf("UPDATE items SET status = 'new' WHERE id = '%s'", id)
-		executeQuery(query, conn)
+		executeQuery(query)
 	}
 }
 
-func DeleteItemStatus(id string, conn pgxpool.Pool) {
-	item := GetItem(id, conn)
+// DeleteItemStatus changes the status of an item from new or old to deleted and from deleted to old.
+// Used on managing page for removing items.
+func DeleteItemStatus(id string) {
+	i := GetItem(id)
 
-	if item.Status == "new" || item.Status == "old" {
+	if i.Status == "new" || i.Status == "old" {
 		query := fmt.Sprintf("UPDATE items SET status = 'deleted' WHERE id = '%s'", id)
-		executeQuery(query, conn)
-	} else if item.Status == "deleted" {
+		executeQuery(query)
+	} else if i.Status == "deleted" {
 		query := fmt.Sprintf("UPDATE items SET status = 'old' WHERE id = '%s'", id)
-		executeQuery(query, conn)
+		executeQuery(query)
 	}
 }
 
-func GetDeletedItems(conn pgxpool.Pool) []item.Item {
-	query := "select * from items where status = 'deleted'"
+// GetItems gets a slice containing all items that match the given status.
+func GetItems(status string) []item.Item {
+	// use LIKE here to be able to match using wildcards
+	query := fmt.Sprintf("SELECT * FROM items WHERE status LIKE '%s'", status)
 	rows, err := conn.Query(context.Background(), query)
-	defer rows.Close()
 	if err != nil {
-		logging.LogWarning("Failed to query for items")
+		logging.LogWarning("Failed to query for items with status " + status)
 	}
 
-	var items []item.Item
+	var itemList []item.Item
 	for rows.Next() {
-		var item item.Item
-		err := rows.Scan(&item.ID, &item.Name, &item.Note, &item.Amount, &item.Status)
+		var i item.Item
+		// scan row into item
+		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status)
 		if err != nil {
-			logging.LogWarning("Failed to scann row: " + err.Error())
+			logging.LogWarning("Failed to scan row: " + err.Error())
 		}
 
-		items = append(items, item)
+		itemList = append(itemList, i)
 	}
 
-	return items
+	return itemList
 }
