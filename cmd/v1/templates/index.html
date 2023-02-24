@@ -18,7 +18,7 @@
         <td>{{ .Amount }}</td>
         <td>
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="submit" value="Eingekauft!" class="form-button-table">
+                <input type="image" src="./images/check-square-white.svg" border="0" alt="Eingekauft" class="form-button-table-icon form-button-table">
             </form>
         </td>
     </tr>
@@ -46,7 +46,7 @@
         <td>{{ .Amount }}</td>
         <td>
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="submit" value="Nochmal Kaufen!" class="form-button-table">
+                <input type="image" src="./images/arrow-up-white.svg" border="0" alt="Nochmal kaufen" class="form-button-table-icon form-button-table">
             </form>
         </td>
     </tr>
