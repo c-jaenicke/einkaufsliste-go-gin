@@ -1,5 +1,5 @@
 ## BUILD
-FROM golang:1.19-alpine as builder
+FROM golang:1.20-alpine:latest as builder
 
 RUN apk update && apk add --no-cache git
 
@@ -16,8 +16,10 @@ COPY pkg/ ./pkg/
 RUN go build -o /shopping
 
 ## DEPLOY
-FROM alpine
+FROM alpine:latest
+
 WORKDIR /app
+
 COPY --from=builder /shopping /app/shopping
 COPY --from=builder /app/templates /app/templates
 COPY --from=builder /app/assets /app/assets

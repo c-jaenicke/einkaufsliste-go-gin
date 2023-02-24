@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	fmt.Println("asd")
+	logging.LogInfo("########## Starting app")
 
 	// := postgres.CreateConnection()
 	postgres.CreateConnection()
@@ -96,6 +96,6 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/manage")
 	})
 
-	logging.LogInfo("##### Starting gin`")
+	logging.LogInfo("##### Starting gin")
 	router.Run(":8080")
 }

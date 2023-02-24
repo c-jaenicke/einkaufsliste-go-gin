@@ -6,7 +6,8 @@ A simple shopping list webapp for managing items that should be bought.
 
 **There is no built-in authentication!**
 
-You should put the site behind [Authelia (authelia.om)](https://www.authelia.com/) or another authentication service to protect it.
+You should put the site behind [Authelia (authelia.com)](https://www.authelia.com/) or another authentication service to
+protect it.
 
 Everyone that has access to the site can change the entries!
 
@@ -19,4 +20,3 @@ Possibly more database connectors in the future.
 ## Icons
 
 All used icons are taken from [https://feathericons.com/](https://feathericons.com/)
-[(github.com/feathericons/feather)](https://github.com/feathericons/feather)
