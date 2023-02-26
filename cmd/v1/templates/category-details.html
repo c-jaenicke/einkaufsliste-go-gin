@@ -1,5 +1,6 @@
 {{template "header.html"}}
 <h2>Artikel in Kategorie {{ .category.Name }}</h2>
+{{ $category := .category }}
 
 <h3>Zu Besorgen: {{ len .newItems }} Artikel</h3>
 
@@ -18,7 +19,7 @@
         <td>{{ .Note }}</td>
         <td>{{ .Amount }}</td>
         <td class="table-icon">
-            <form action="/item/{{ .ID }}/update" method="post">
+            <form action="/category/{{ $category.ID }}/item/{{ .ID }}/update" method="post">
                 <input type="image" src="/images/check-square-white.svg" border="0" alt="Eingekauft" class="form-button-table-icon form-button-table">
             </form>
         </td>
@@ -52,7 +53,7 @@
         <td>{{ .Note }}</td>
         <td>{{ .Amount }}</td>
         <td>
-            <form action="/item/{{ .ID }}/update" method="post">
+            <form action="/category/{{ $category.ID }}/item/{{ .ID }}/update" method="post">
                 <input type="image" src="/images/arrow-up-white.svg" border="0" alt="Nochmal kaufen" class="form-button-table-icon form-button-table">
             </form>
         </td>

@@ -32,6 +32,7 @@
     <label for="category">Kategorie:</label>
     <br>
     <select name="category" id="category">
+        <option value="0">Keine</option>
         {{ range .categoryList }}
         <option value="{{ .ID }}">{{ .ID }} {{ .Name }}</option>
         {{ end }}
@@ -73,6 +74,7 @@
         <label for="category">Kategorie:</label>
         <br>
         <select name="category" id="category">
+            <option value="0">Keine</option>
             {{ range .categoryList }}
                 <option value="{{ .ID }}">{{ .ID }} {{ .Name }}</option>
             {{ end }}

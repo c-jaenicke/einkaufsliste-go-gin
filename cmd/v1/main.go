@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"
@@ -31,8 +32,9 @@ func main() {
 	// index page, list of items to buy and old items
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"newItems": postgres.GetItems("new"),
-			"oldItems": postgres.GetItems("old"),
+			"newItems":  postgres.GetItems("new"),
+			"oldItems":  postgres.GetItems("old"),
+			"testColor": "#000000",
 		})
 	})
 
@@ -77,6 +79,7 @@ func main() {
 	router.POST("/item/:id/update", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		postgres.UpdateItemStatus(id)
+		fmt.Println(c.Request.URL.Path)
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
@@ -151,6 +154,17 @@ func main() {
 			"newItems": postgres.GetItemsInCategory(id, "new"),
 			"oldItems": postgres.GetItemsInCategory(id, "old"),
 		})
+	})
+
+	//
+	// UPDATE ITEM ON CATEGORY DETAILS VIEW
+	//
+	router.POST("/category/:id/item/:iid/update", func(c *gin.Context) {
+		id := c.Params.ByName("id")
+		iid := c.Params.ByName("iid")
+		postgres.UpdateItemStatus(iid)
+		fmt.Println(c.Request.URL.Path)
+		c.Redirect(http.StatusMovedPermanently, "/category/"+id)
 	})
 
 	logging.LogInfo("##### Starting gin on port 8080")
