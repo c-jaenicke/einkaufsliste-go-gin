@@ -1,10 +1,10 @@
 {{template "header.html"}}
-<h2 class="title2">{{ .title }}</h2>
+<h2 class="title">{{ .title }}</h2>
 
 {{ if .item }}
 
 <form action="" method="post" enctype="multipart/form-data">
-    <label for="name" class="form-label">Artikel-Name:</label>
+    <label for="name">Artikel-Name:</label>
     <br>
     <input type="text" name="name" id="name" class="form-input" maxlength="100" value="{{ .item.Name }}" required>
     <img src="/images/edit-3.svg">
@@ -12,7 +12,7 @@
     <br>
     <br>
 
-    <label for="note" class="form-label">Notiz:</label>
+    <label for="note">Notiz:</label>
     <br>
     <textarea name="note" id="note" class="form-input" maxlength="100">{{ .item.Note }}</textarea>
     <img src="/images/edit-3.svg">
@@ -20,7 +20,7 @@
     <br>
     <br>
 
-    <label for="amount" class="form-label">Menge:</label>
+    <label for="amount">Menge:</label>
     <br>
     <input type="number" name="amount" id="amount" class="form-input" value="{{ .item.Amount }}" min="1">
     <img src="/images/edit-3.svg">
@@ -29,7 +29,7 @@
 
     <form action="/item/new" method="post" enctype="multipart/form-data">
 
-        <label for="name" class="form-label">Artikel-Name:</label>
+        <label for="name">Artikel-Name:</label>
         <br>
         <input type="text" name="name" id="name" class="form-input" maxlength="100" placeholder="Apfel, Paprika, Gurke"
                required> <img src="/images/edit-3.svg">
@@ -37,7 +37,7 @@
         <br>
         <br>
 
-        <label for="note" class="form-label">Notiz:</label>
+        <label for="note">Notiz:</label>
         <br>
         <textarea name="note" id="note" class="form-input" maxlength="100" placeholder="Nur Bio bitte."></textarea>
         <img src="/images/edit-3.svg">
@@ -45,10 +45,10 @@
         <br>
         <br>
 
-        <label for="amount" class="form-label">Menge:</label>
+        <label for="amount">Menge:</label>
         <br>
         <input type="number" name="amount" id="amount" class="form-input" value="1" min="1">
-        <img  src="/images/edit-3.svg">
+        <img src="/images/edit-3.svg">
 
 
         {{ end }}
@@ -57,4 +57,5 @@
         <input type="submit" value="Speichern" class="form-button" required>
 
     </form>
-    {{template "footer.html"}}
+
+{{template "footer.html"}}

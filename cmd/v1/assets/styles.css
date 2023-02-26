@@ -29,29 +29,25 @@
     --light-gray: #d0c8c8;
 
     font-family: Arial, Helvetica ,"monospace";
+    --font-size: 1rem;
+    font-size: var(--font-size);
 }
 
-.container {
-    margin: 0;
-    /*max-width: 75rem;*/
-    /*padding-left: 2rem;*/
-    /*padding-right: 2rem;*/
-    /*margin-left:  auto;*/
-    /*margin-right: auto;*/
-}
+/*HEADING SETTINGS*/
 
-.title {
-    margin: 0;
-    font-size: 1rem;
-    color: var(--celtic-blue);
-    text-decoration: none;
-}
-
-.title2 {
+h2 {
     margin: 1rem 0rem 1rem;
     color: var(--celtic-blue);
     text-decoration: none;
 }
+
+h3 {
+    margin: 2rem 0rem 2rem;
+    color: var(--black);
+    text-decoration: none;
+}
+
+/*PAGE SPLITTING*/
 
 hr {
     color: var(--capri);
@@ -91,7 +87,6 @@ thead th {
     border-bottom-color: black;
 }
 
-
 /*TOP NAVIGATION BAR*/
 
 .topnav {
@@ -106,7 +101,7 @@ thead th {
     text-align: center;
     padding: 10px 10px;
     text-decoration: none;
-    font-size: 17px;
+    font-size: calc(var(--font-size) * 1.2);
 }
 
 .topnav a:hover {
@@ -133,7 +128,7 @@ thead th {
     text-decoration: none;
     background-color: var(--celtic-blue);
     color: white;
-    font-size: 1rem;
+    font-size: inherit;
 
     border-radius: 7px;
     border-width: 1px;
@@ -162,11 +157,13 @@ thead th {
 .form-input {
     border-radius: 7px;
     height: 24px;
-    font-size: 1rem;
+    font-size: inherit;
+    width: 80%;
 }
 
-.form-label {
-    /*font-size: 1.5rem;*/
+label {
+    margin: 2rem 0 0;
+    font-size: inherit;
 }
 
 .form-button-table-icon {
@@ -176,6 +173,6 @@ thead th {
 /*FOOTER SETTINGS*/
 
 .footer {
-    color: var(--celtic-blue);
-    text-align: center;
+    display: flex;
+    justify-content: center;
 }

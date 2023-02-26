@@ -96,6 +96,6 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/manage")
 	})
 
-	logging.LogInfo("##### Starting gin")
+	logging.LogInfo("##### Starting gin on port 8080")
 	router.Run(":8080")
 }
