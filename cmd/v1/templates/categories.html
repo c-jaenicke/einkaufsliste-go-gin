@@ -1,0 +1,33 @@
+{{template "header.html"}}
+<h2>Kategorien</h2>
+
+{{ if .categoryList }}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Menge</th>
+        <th></th>
+    </tr>
+    {{ range .categoryList }}
+    <tr>
+        <td>
+            <a href="/category/{{ .ID }}">{{ .Name}} </a>
+        </td>
+        <td></td>
+        <td class="table-icon">
+            <a href="/category/{{ .ID }}/change">
+                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+            </a>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+{{else}}
+<p>Keine Kategorien gefunden!</p>
+{{end}}
+
+<form action="/category/new">
+    <input type="submit" value="Neue Kategorie anlegen" class="form-button">
+</form>
+
+{{template "footer.html"}}

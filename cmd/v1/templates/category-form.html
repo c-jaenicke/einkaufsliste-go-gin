@@ -1,0 +1,28 @@
+{{template "header.html"}}
+<h2 class="title">{{ .title }}</h2>
+
+{{ if .category }}
+
+<form action="" method="post" enctype="multipart/form-data">
+    <label for="name">Kategorie-Name:</label>
+    <br>
+    <input type="text" name="name" id="name" class="form-input" maxlength="100" value="{{ .category.Name }}" required>
+    <img src="/images/edit-3.svg">
+
+    {{ else }}
+
+    <form action="/category/new" method="post" enctype="multipart/form-data">
+
+        <label for="name">Kategorie-Name</label>
+        <br>
+        <input type="text" name="name" id="name" class="form-input" maxlength="100" placeholder="Gemüse, Fleisch, Milchprodukte"
+               required> <img src="/images/edit-3.svg">
+
+        {{ end }}
+        <br>
+        <br>
+        <input type="submit" value="Speichern" class="form-button" required>
+
+    </form>
+
+{{template "footer.html"}}

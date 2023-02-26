@@ -1,0 +1,71 @@
+{{template "header.html"}}
+<h2>Artikel in Kategorie {{ .category.Name }}</h2>
+
+<h3>Zu Besorgen: {{ len .newItems }} Artikel</h3>
+
+{{ if .newItems }}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Notiz</th>
+        <th>Menge</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {{ range .newItems }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Note }}</td>
+        <td>{{ .Amount }}</td>
+        <td class="table-icon">
+            <form action="/item/{{ .ID }}/update" method="post">
+                <input type="image" src="/images/check-square-white.svg" border="0" alt="Eingekauft" class="form-button-table-icon form-button-table">
+            </form>
+        </td>
+        <td class="table-icon">
+            <a href="/item/{{ .ID }}/change">
+                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+            </a>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+{{else}}
+<p>Keine Einträge gefunden!</p>
+{{end}}
+
+<hr class="page-hr">
+<h3>Letzte Einkäufe</h3>
+
+{{ if .oldItems }}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Notiz</th>
+        <th>Menge</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {{ range .oldItems }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Note }}</td>
+        <td>{{ .Amount }}</td>
+        <td>
+            <form action="/item/{{ .ID }}/update" method="post">
+                <input type="image" src="/images/arrow-up-white.svg" border="0" alt="Nochmal kaufen" class="form-button-table-icon form-button-table">
+            </form>
+        </td>
+        <td>
+            <a href="/item/{{ .ID }}/change">
+                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+            </a>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+{{else}}
+<p>Keine Einträge gefunden!</p>
+{{end}}
+
+{{template "footer.html"}}

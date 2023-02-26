@@ -120,9 +120,21 @@
 
 <h3>DEBUG</h3>
 
+<h4>ITEMS</h4>
 {{ if .itemList }}
 <ol>
     {{ range .itemList }}
+    <li>{{.}}</li>
+    {{end}}
+</ol>
+{{else}}
+<p>No entries</p>
+{{end}}
+
+<h4>CATEGORIES</h4>
+{{ if .categoryList }}
+<ol>
+    {{ range .categoryList }}
     <li>{{.}}</li>
     {{end}}
 </ol>

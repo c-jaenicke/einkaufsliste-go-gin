@@ -7,11 +7,16 @@ import (
 	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"os"
+	"shopping-list/pkg/category"
 	"shopping-list/pkg/item"
 	"shopping-list/pkg/logging"
 )
 
 var conn *pgxpool.Pool
+
+//
+// DATABASE FUNCTIONS
+//
 
 // CreateConnection create database *connection
 func CreateConnection() {
@@ -48,15 +53,10 @@ func PingDatabase() bool {
 	}
 }
 
-// InsertItem inserts a new item into the database.
-func InsertItem(name string, note string, amount int) {
-	query := fmt.Sprintf("INSERT INTO items (name, note, amount, status) VALUES ('%s','%s','%d','new');", name, note, amount)
-	executeQuery(query)
-}
-
 // CreateTable create new table for given channel
 // runs at start to make sure tables exists
 func CreateTable() {
+	// create table containing items
 	query := "create table if not exists items (" +
 		"id SERIAL PRIMARY KEY," +
 		"name VARCHAR(100) NOT NULL," +
@@ -66,6 +66,7 @@ func CreateTable() {
 		");"
 
 	executeQuery(query)
+
 }
 
 // executeQuery executes a query using a *connection from the pool
@@ -79,6 +80,16 @@ func executeQuery(query string) {
 	}
 }
 
+//
+// ITEM FUNCTIONS
+//
+
+// InsertItem inserts a new item into the database.
+func InsertItem(name string, note string, amount int, cat_id string) {
+	query := fmt.Sprintf("INSERT INTO items (name, note, amount, status, cat_id) VALUES ('%s','%s','%d','new','%s');", name, note, amount, cat_id)
+	executeQuery(query)
+}
+
 // GetItem returns single item by given ID.
 func GetItem(id string) item.Item {
 	query := fmt.Sprintf("select * from items where id = %s", id)
@@ -89,7 +100,7 @@ func GetItem(id string) item.Item {
 
 	var i item.Item
 	for rows.Next() {
-		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status)
+		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status, &i.Cat_id)
 		if err != nil {
 			logging.LogWarning("Failed to scann row: " + err.Error())
 		}
@@ -143,7 +154,85 @@ func GetItems(status string) []item.Item {
 	for rows.Next() {
 		var i item.Item
 		// scan row into item
-		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status)
+		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status, &i.Cat_id)
+		if err != nil {
+			logging.LogWarning("Failed to scan row: " + err.Error())
+		}
+
+		itemList = append(itemList, i)
+	}
+
+	return itemList
+}
+
+//
+// CATEGORY FUNCTIONS
+//
+
+// CreateCategory creates a new category with the given name
+func CreateCategory(name string) {
+	query := fmt.Sprintf("INSERT INTO category (name) values ('%s');", name)
+	executeQuery(query)
+}
+
+// GetAllCategories gets slice of all categories that exist
+func GetAllCategories() []category.Category {
+	query := fmt.Sprintf("SELECT * FROM category;")
+	rows, err := conn.Query(context.Background(), query)
+	if err != nil {
+		logging.LogWarning("Failed to query all categories " + query)
+	}
+
+	var catList []category.Category
+	for rows.Next() {
+		var c category.Category
+		err := rows.Scan(&c.ID, &c.Name)
+		if err != nil {
+			logging.LogWarning("Failed to scan row: " + err.Error())
+		}
+
+		catList = append(catList, c)
+	}
+
+	return catList
+}
+
+func GetCategory(id string) category.Category {
+	query := fmt.Sprintf("SELECT * FROM category WHERE id = '%s';", id)
+	rows, err := conn.Query(context.Background(), query)
+	if err != nil {
+		logging.LogWarning("Failed to query all categories " + query)
+	}
+
+	var c category.Category
+	for rows.Next() {
+		err := rows.Scan(&c.ID, &c.Name)
+		if err != nil {
+			logging.LogWarning("Failed to scan row: " + err.Error())
+		}
+	}
+
+	return c
+}
+
+func ChangeCategory(id, name string) {
+	query := fmt.Sprintf("UPDATE category SET name = '%s' WHERE id = '%s'", name, id)
+	executeQuery(query)
+}
+
+func GetItemsInCategory(id string, status string) []item.Item {
+	query := fmt.Sprintf("SELECT * FROM items WHERE cat_id = '%s' AND status LIKE '%s';", id, status)
+
+	rows, err := conn.Query(context.Background(), query)
+	if err != nil {
+		logging.LogWarning("Failed query" + query)
+	}
+
+	var itemList []item.Item
+	for rows.Next() {
+		var i item.Item
+		// scan row into item
+		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status, &i.Cat_id)
 		if err != nil {
 			logging.LogWarning("Failed to scan row: " + err.Error())
 		}

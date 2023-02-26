@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"
@@ -16,10 +15,10 @@ func main() {
 
 	// := postgres.CreateConnection()
 	postgres.CreateConnection()
-	postgres.CreateTable()
+	//postgres.CreateTable()
 
 	// uncomment line to switch to release mode
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.SetFuncMap(template.FuncMap{
 		"upper": strings.ToUpper,
@@ -40,7 +39,8 @@ func main() {
 	// form for creating a new item
 	router.GET("/item/new", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "form.html", gin.H{
-			"title": "Neuen Eintrag anlegen",
+			"title":        "Neuen Eintrag anlegen",
+			"categoryList": postgres.GetAllCategories(),
 		})
 	})
 
@@ -49,8 +49,8 @@ func main() {
 		name := c.PostForm("name")
 		note := c.PostForm("note")
 		amount, _ := strconv.Atoi(c.PostForm("amount"))
-		fmt.Println(name, note, amount)
-		postgres.InsertItem(name, note, amount)
+		cat_id := c.PostForm("category")
+		postgres.InsertItem(name, note, amount, cat_id)
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
@@ -58,8 +58,9 @@ func main() {
 	router.GET("item/:id/change", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		c.HTML(http.StatusOK, "form.html", gin.H{
-			"title": "Artikel Bearbeiten",
-			"item":  postgres.GetItem(id),
+			"title":        "Artikel Bearbeiten",
+			"item":         postgres.GetItem(id),
+			"categoryList": postgres.GetAllCategories(),
 		})
 	})
 
@@ -86,6 +87,7 @@ func main() {
 			"newItems":     postgres.GetItems("new"),
 			"oldItems":     postgres.GetItems("old"),
 			"deletedItems": postgres.GetItems("deleted"),
+			"categoryList": postgres.GetAllCategories(),
 		})
 	})
 
@@ -94,6 +96,61 @@ func main() {
 		id := c.Params.ByName("id")
 		postgres.DeleteItemStatus(id)
 		c.Redirect(http.StatusMovedPermanently, "/manage")
+	})
+
+	//
+	// CREATE NEW CATEGORY
+	//
+	router.GET("/category/new", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "category-form.html", gin.H{
+			"title": "Neue Kategorie anlegen",
+		})
+	})
+
+	router.POST("/category/new", func(c *gin.Context) {
+		name := c.PostForm("name")
+		postgres.CreateCategory(name)
+		c.Redirect(http.StatusMovedPermanently, "/")
+	})
+
+	//
+	// CATEGORY OVERVIEW
+	//
+	router.GET("/category", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "categories.html", gin.H{
+			"categoryList": postgres.GetAllCategories(),
+		})
+	})
+
+	//
+	// CHANGE EXISTING CATEGORY
+	//
+	router.GET("category/:id/change", func(c *gin.Context) {
+		id := c.Params.ByName("id")
+		c.HTML(http.StatusOK, "category-form.html", gin.H{
+			"title":    "Kategorie Bearbeiten",
+			"category": postgres.GetCategory(id),
+		})
+	})
+
+	router.POST("category/:id/change", func(c *gin.Context) {
+		id := c.Params.ByName("id")
+		name := c.PostForm("name")
+		postgres.ChangeCategory(id, name)
+		c.Redirect(http.StatusMovedPermanently, "/category")
+	})
+
+	//
+	// ITEMS IN CATEGORY
+	//
+	router.GET("/category/:id", func(c *gin.Context) {
+		id := c.Params.ByName("id")
+		c.HTML(http.StatusOK, "category-details.html", gin.H{
+			"title":    "Kategorie Bearbeiten",
+			"category": postgres.GetCategory(id),
+			"newItems": postgres.GetItemsInCategory(id, "new"),
+			"oldItems": postgres.GetItemsInCategory(id, "old"),
+		})
 	})
 
 	logging.LogInfo("##### Starting gin on port 8080")

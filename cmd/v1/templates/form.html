@@ -25,6 +25,22 @@
     <input type="number" name="amount" id="amount" class="form-input" value="{{ .item.Amount }}" min="1">
     <img src="/images/edit-3.svg">
 
+    <br>
+    <br>
+
+    {{ if .categoryList }}
+    <label for="category">Kategorie:</label>
+    <br>
+    <select name="category" id="category">
+        {{ range .categoryList }}
+        <option value="{{ .ID }}">{{ .ID }} {{ .Name }}</option>
+        {{ end }}
+    </select>
+    <img src="/images/edit-3.svg">
+    {{ else }}
+        <p>Keine Kategorien vorhanden!</p>
+    {{ end }}
+
     {{ else }}
 
     <form action="/item/new" method="post" enctype="multipart/form-data">
@@ -49,6 +65,22 @@
         <br>
         <input type="number" name="amount" id="amount" class="form-input" value="1" min="1">
         <img src="/images/edit-3.svg">
+
+        <br>
+        <br>
+
+        {{ if .categoryList }}
+        <label for="category">Kategorie:</label>
+        <br>
+        <select name="category" id="category">
+            {{ range .categoryList }}
+                <option value="{{ .ID }}">{{ .ID }} {{ .Name }}</option>
+            {{ end }}
+        </select>
+        <img src="/images/edit-3.svg">
+        {{ else }}
+            <p>Keine Kategorien vorhanden!</p>
+        {{ end }}
 
 
         {{ end }}
