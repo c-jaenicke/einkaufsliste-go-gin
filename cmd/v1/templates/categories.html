@@ -1,6 +1,8 @@
 {{template "header.html"}}
 <h2>Kategorien</h2>
 
+{{ $itemList := .itemList }}
+
 {{ if .categoryList }}
 <table>
     <tr>
@@ -8,12 +10,12 @@
         <th>Menge</th>
         <th></th>
     </tr>
-    {{ range .categoryList }}
+    {{ range $index, $category := .categoryList }}
     <tr>
         <td>
             <a href="/category/{{ .ID }}">{{ .Name}} </a>
         </td>
-        <td></td>
+        <td>{{ (GetItemCount $category)  }}</td>
         <td class="table-icon">
             <a href="/category/{{ .ID }}/change">
                 <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">

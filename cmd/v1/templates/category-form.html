@@ -15,7 +15,8 @@
 
         <label for="name">Kategorie-Name</label>
         <br>
-        <input type="text" name="name" id="name" class="form-input" maxlength="100" placeholder="Gemüse, Fleisch, Milchprodukte"
+        <input type="text" name="name" id="name" class="form-input" maxlength="100"
+               placeholder="Gemüse, Fleisch, Milchprodukte"
                required> <img src="/images/edit-3.svg">
 
         {{ end }}
@@ -25,4 +26,13 @@
 
     </form>
 
-{{template "footer.html"}}
+    {{ if .category }}
+    <br>
+    <br>
+    <br>
+
+    <input type="submit" value="Kategorie löschen" formaction="/category/{{ .category.ID }}/delete" formmethod="post"
+           class="form-button">
+    {{ end }}
+
+    {{template "footer.html"}}

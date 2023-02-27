@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"
+	"shopping-list/pkg/category"
 	"shopping-list/pkg/logging"
 	"shopping-list/pkg/postgres"
 	"strconv"
@@ -27,6 +28,9 @@ func main() {
 	router.Static("/assets", "./assets")
 	router.Static("/images", "./images")
 	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
+	router.SetFuncMap(template.FuncMap{
+		"GetItemCount": GetItemCount,
+	})
 	router.LoadHTMLGlob("./templates/*.html")
 
 	// index page, list of items to buy and old items
@@ -122,13 +126,14 @@ func main() {
 	router.GET("/category", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "categories.html", gin.H{
 			"categoryList": postgres.GetAllCategories(),
+			"itemList":     postgres.GetItems("new"),
 		})
 	})
 
 	//
 	// CHANGE EXISTING CATEGORY
 	//
-	router.GET("category/:id/change", func(c *gin.Context) {
+	router.GET("/category/:id/change", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		c.HTML(http.StatusOK, "category-form.html", gin.H{
 			"title":    "Kategorie Bearbeiten",
@@ -136,10 +141,19 @@ func main() {
 		})
 	})
 
-	router.POST("category/:id/change", func(c *gin.Context) {
+	router.POST("/category/:id/change", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		name := c.PostForm("name")
 		postgres.ChangeCategory(id, name)
+		c.Redirect(http.StatusMovedPermanently, "/category")
+	})
+
+	//
+	// DELETE CATEGORY
+	//
+	router.POST("/category/:id/delete", func(c *gin.Context) {
+		id := c.Params.ByName("id")
+		postgres.DeleteCategory(id)
 		c.Redirect(http.StatusMovedPermanently, "/category")
 	})
 
@@ -169,4 +183,9 @@ func main() {
 
 	logging.LogInfo("##### Starting gin on port 8080")
 	router.Run(":8080")
+}
+
+func GetItemCount(c category.Category) int {
+	itemSlice := postgres.GetItemsInCategory(strconv.Itoa(c.ID), "new")
+	return len(itemSlice)
 }

@@ -67,6 +67,8 @@ func CreateTable() {
 
 	executeQuery(query)
 
+	// TODO add query to include category table
+	// TODO add query to insert category "0 - None"
 }
 
 // executeQuery executes a query using a *connection from the pool
@@ -241,4 +243,10 @@ func GetItemsInCategory(id string, status string) []item.Item {
 	}
 
 	return itemList
+}
+
+// DeleteCategory deletes an existing category from the table
+func DeleteCategory(id string) {
+	query := fmt.Sprintf("DELETE FROM category WHERE id = '%s';", id)
+	executeQuery(query)
 }
