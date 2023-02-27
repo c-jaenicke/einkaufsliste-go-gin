@@ -15,7 +15,6 @@ import (
 func main() {
 	logging.LogInfo("########## Starting app")
 
-	// := postgres.CreateConnection()
 	postgres.CreateConnection()
 	//postgres.CreateTable()
 
@@ -33,7 +32,9 @@ func main() {
 	})
 	router.LoadHTMLGlob("./templates/*.html")
 
-	// index page, list of items to buy and old items
+	//
+	// INDEX PAGE
+	// List of new items and old items
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"newItems":  postgres.GetItems("new"),
@@ -42,7 +43,9 @@ func main() {
 		})
 	})
 
-	// form for creating a new item
+	//
+	// NEW ITEM FORM
+	// Form for creating a new item
 	router.GET("/item/new", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "form.html", gin.H{
 			"title":        "Neuen Eintrag anlegen",
@@ -50,7 +53,6 @@ func main() {
 		})
 	})
 
-	// post path for creating the new item in form
 	router.POST("/item/new", func(c *gin.Context) {
 		name := c.PostForm("name")
 		note := c.PostForm("note")
@@ -60,7 +62,9 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
-	// update an item
+	//
+	// CHANGE ITEM
+	// Edit Name, Note and Category of an item
 	router.GET("item/:id/change", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		c.HTML(http.StatusOK, "form.html", gin.H{
@@ -79,7 +83,9 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
-	// post path for updating the status of an item
+	//
+	// UPDATE ITEM STATUS
+	// Updates the status of an item from new to old and new to old
 	router.POST("/item/:id/update", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		postgres.UpdateItemStatus(id)
@@ -87,7 +93,9 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
-	// path for manage page
+	//
+	// MANAGE
+	// Page for bulk deleting items
 	router.GET("/manage", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "manage.html", gin.H{
 			"itemList":     postgres.GetItems("%"),
@@ -98,7 +106,9 @@ func main() {
 		})
 	})
 
-	// post path for changing an item status to deleted
+	//
+	// DELETE ITEM
+	// Delete an existing item, only sets status to "deleted"
 	router.POST("/item/:id/delete", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		postgres.DeleteItemStatus(id)
@@ -107,7 +117,7 @@ func main() {
 
 	//
 	// CREATE NEW CATEGORY
-	//
+	// Form for creating a new category
 	router.GET("/category/new", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "category-form.html", gin.H{
 			"title": "Neue Kategorie anlegen",
@@ -122,7 +132,7 @@ func main() {
 
 	//
 	// CATEGORY OVERVIEW
-	//
+	// Overview of categories
 	router.GET("/category", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "categories.html", gin.H{
 			"categoryList": postgres.GetAllCategories(),
@@ -132,7 +142,7 @@ func main() {
 
 	//
 	// CHANGE EXISTING CATEGORY
-	//
+	// Change the name of an existing category
 	router.GET("/category/:id/change", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		c.HTML(http.StatusOK, "category-form.html", gin.H{
@@ -150,7 +160,7 @@ func main() {
 
 	//
 	// DELETE CATEGORY
-	//
+	// Delete an existing category
 	router.POST("/category/:id/delete", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		postgres.DeleteCategory(id)
@@ -159,7 +169,7 @@ func main() {
 
 	//
 	// ITEMS IN CATEGORY
-	//
+	// List all items in a category
 	router.GET("/category/:id", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		c.HTML(http.StatusOK, "category-details.html", gin.H{
@@ -172,7 +182,7 @@ func main() {
 
 	//
 	// UPDATE ITEM ON CATEGORY DETAILS VIEW
-	//
+	// Post for editing an item while in the category details view
 	router.POST("/category/:id/item/:iid/update", func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		iid := c.Params.ByName("iid")
@@ -181,10 +191,16 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/category/"+id)
 	})
 
+	// ALL ROUTES MUST BE ABOVE HERE
+	// START GIN
+	//
 	logging.LogInfo("##### Starting gin on port 8080")
 	router.Run(":8080")
 }
 
+// GetItemCount counts items that belong to a given category and match the status new.
+// Used in categories.html .
+// Mapped by router.SetFuncMap()
 func GetItemCount(c category.Category) int {
 	itemSlice := postgres.GetItemsInCategory(strconv.Itoa(c.ID), "new")
 	return len(itemSlice)

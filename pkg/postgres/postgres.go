@@ -199,6 +199,7 @@ func GetAllCategories() []category.Category {
 	return catList
 }
 
+// GetCategory gets category object from given id
 func GetCategory(id string) category.Category {
 	query := fmt.Sprintf("SELECT * FROM category WHERE id = '%s';", id)
 	rows, err := conn.Query(context.Background(), query)
@@ -217,11 +218,13 @@ func GetCategory(id string) category.Category {
 	return c
 }
 
+// ChangeCategory updates name of a category
 func ChangeCategory(id, name string) {
 	query := fmt.Sprintf("UPDATE category SET name = '%s' WHERE id = '%s'", name, id)
 	executeQuery(query)
 }
 
+// GetItemsInCategory returns slice of all items in a category with the given status
 func GetItemsInCategory(id string, status string) []item.Item {
 	query := fmt.Sprintf("SELECT * FROM items WHERE cat_id = '%s' AND status LIKE '%s';", id, status)
 
