@@ -87,6 +87,10 @@ thead th {
     border-bottom-color: black;
 }
 
+.table-small-column {
+    max-width: 0.5rem;
+}
+
 /*TOP NAVIGATION BAR*/
 
 .topnav {
