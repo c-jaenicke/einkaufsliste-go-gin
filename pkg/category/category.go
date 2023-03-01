@@ -1,11 +1,11 @@
 package category
 
 type Category struct {
-	ID        int
-	Name      string
-	Counter   int
-	Color     string
-	ColorName string
+	ID         int
+	Name       string
+	Counter    int
+	Color      string
+	Color_name string
 }
 
 var ColorMap = map[string]string{

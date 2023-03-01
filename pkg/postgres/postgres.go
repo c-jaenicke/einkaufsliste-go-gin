@@ -5,6 +5,7 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"os"
 	"shopping-list/pkg/category"
@@ -71,6 +72,7 @@ func CreateTable() {
 	// TODO add query to insert category "0 - None"
 }
 
+// TODO rename this function, since it doesnt execute a query, but executes a command
 // executeQuery executes a query using a *connection from the pool
 func executeQuery(query string) {
 	_, err := conn.Exec(context.Background(), query)
@@ -81,6 +83,8 @@ func executeQuery(query string) {
 		logging.LogInfo(queryMessage)
 	}
 }
+
+// TODO add executeQuery function here, which actually executes a query instead of function above
 
 //
 // ITEM FUNCTIONS
@@ -100,15 +104,7 @@ func GetItem(id string) item.Item {
 		logging.LogWarning("Failed to find item with id " + id)
 	}
 
-	var i item.Item
-	for rows.Next() {
-		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status, &i.Cat_id)
-		if err != nil {
-			logging.LogWarning("Failed to scann row: " + err.Error())
-		}
-	}
-
-	return i
+	return rowsToItems(rows)[0]
 }
 
 // UpdateItemStatus changes status of an item from old to new and other way around.
@@ -152,19 +148,23 @@ func GetItems(status string) []item.Item {
 		logging.LogWarning("Failed to query for items with status " + status)
 	}
 
-	var itemList []item.Item
+	return rowsToItems(rows)
+}
+
+// rowsToItems turn query response containing items to slice of items
+func rowsToItems(rows pgx.Rows) []item.Item {
+	var itemSlice []item.Item
 	for rows.Next() {
 		var i item.Item
-		// scan row into item
 		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status, &i.Cat_id)
 		if err != nil {
-			logging.LogWarning("Failed to scan row: " + err.Error())
+			logging.LogWarning("Failed to scan row into item object: " + err.Error())
 		}
 
-		itemList = append(itemList, i)
+		itemSlice = append(itemSlice, i)
 	}
 
-	return itemList
+	return itemSlice
 }
 
 //
@@ -185,18 +185,7 @@ func GetAllCategories() []category.Category {
 		logging.LogWarning("Failed to query all categories " + query)
 	}
 
-	var catList []category.Category
-	for rows.Next() {
-		var c category.Category
-		err := rows.Scan(&c.ID, &c.Name, &c.Color, &c.ColorName)
-		if err != nil {
-			logging.LogWarning("Failed to scan row: " + err.Error())
-		}
-
-		catList = append(catList, c)
-	}
-
-	return catList
+	return rowsToCategory(rows)
 }
 
 // GetCategory gets category object from given id
@@ -207,15 +196,7 @@ func GetCategory(id string) category.Category {
 		logging.LogWarning("Failed to query all categories " + query)
 	}
 
-	var c category.Category
-	for rows.Next() {
-		err := rows.Scan(&c.ID, &c.Name, &c.Color, &c.ColorName)
-		if err != nil {
-			logging.LogWarning("Failed to scan row: " + err.Error())
-		}
-	}
-
-	return c
+	return rowsToCategory(rows)[0]
 }
 
 // ChangeCategory updates name of a category
@@ -233,23 +214,27 @@ func GetItemsInCategory(id string, status string) []item.Item {
 		logging.LogWarning("Failed query" + query)
 	}
 
-	var itemList []item.Item
-	for rows.Next() {
-		var i item.Item
-		// scan row into item
-		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status, &i.Cat_id)
-		if err != nil {
-			logging.LogWarning("Failed to scan row: " + err.Error())
-		}
-
-		itemList = append(itemList, i)
-	}
-
-	return itemList
+	return rowsToItems(rows)
 }
 
 // DeleteCategory deletes an existing category from the table
 func DeleteCategory(id string) {
 	query := fmt.Sprintf("DELETE FROM category WHERE id = '%s';", id)
 	executeQuery(query)
+}
+
+// rowsToCategory transforms rows into category objects. Returned as a slice of category
+func rowsToCategory(rows pgx.Rows) []category.Category {
+	var categorySlice []category.Category
+	for rows.Next() {
+		var c category.Category
+		err := rows.Scan(&c.ID, &c.Name, &c.Color, &c.Color_name)
+		if err != nil {
+			logging.LogWarning("Failed to scan row into category object: " + err.Error())
+		}
+
+		categorySlice = append(categorySlice, c)
+	}
+
+	return categorySlice
 }
