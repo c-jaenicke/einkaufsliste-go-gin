@@ -13,6 +13,7 @@
         <th></th>
         <th></th>
     </tr>
+    
     {{ range .newItems }}
     <tr>
         <td>{{ .Name }}</td>
@@ -35,12 +36,15 @@
         </td>
     </tr>
     {{ end }}
+
 </table>
+
 {{else}}
 <p>Keine Einträge gefunden!</p>
 {{end}}
 
 <hr class="page-hr">
+
 <h3>Letzte Einkäufe</h3>
 
 {{ if .oldItems }}
@@ -53,6 +57,7 @@
         <th></th>
         <th></th>
     </tr>
+
     {{ range .oldItems }}
     <tr>
         <td>{{ .Name }}</td>
@@ -75,12 +80,15 @@
         </td>
     </tr>
     {{ end }}
+
 </table>
+
 {{else}}
 <p>Keine Einträge gefunden!</p>
 {{end}}
 
 <hr class="page-hr">
+
 <h3>Gelöschte Einträge</h3>
 
 {{ if .deletedItems }}
@@ -93,6 +101,7 @@
         <th></th>
         <th></th>
     </tr>
+
     {{ range .deletedItems }}
     <tr>
         <td>{{ .ID }}</td>
@@ -111,35 +120,13 @@
         </td>
     </tr>
     {{ end }}
+
 </table>
+
 {{else}}
 <p>Keine gelöschten Einträge!</p>
 {{end}}
 
-<hr class="page-hr">
-
-<h3>DEBUG</h3>
-
-<h4>ITEMS</h4>
-{{ if .itemList }}
-<ol>
-    {{ range .itemList }}
-    <li>{{.}}</li>
-    {{end}}
-</ol>
-{{else}}
-<p>No entries</p>
-{{end}}
-
-<h4>CATEGORIES</h4>
-{{ if .categoryList }}
-<ol>
-    {{ range .categoryList }}
-    <li>{{.}}</li>
-    {{end}}
-</ol>
-{{else}}
-<p>No entries</p>
-{{end}}
+<!-- TODO Button to delete all entries in table items -->
 
 {{template "footer.html"}}

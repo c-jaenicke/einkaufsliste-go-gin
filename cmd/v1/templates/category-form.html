@@ -3,10 +3,11 @@
 
 {{ if .category }}
 
-<form action="" method="post" enctype="multipart/form-data">
+<form action="" enctype="multipart/form-data" method="post">
+
     <label for="name">Kategorie-Name:</label>
     <br>
-    <input type="text" name="name" id="name" class="form-input" maxlength="100" value="{{ .category.Name }}" required>
+    <input class="form-input" id="name" maxlength="100" name="name" required type="text" value="{{ .category.Name }}">
     <img src="/images/edit-3.svg">
 
     <br>
@@ -14,42 +15,42 @@
 
     <label for="color">Farbe:</label>
     <br>
-    <select name="color" id="color">
+    <select id="color" name="color">
         {{ if ne .category.Color "#FFFFFF" }}
-            <option value="{{ .Color }}">{{ .category.ColorName }}</option>
+        <option value="{{ .Color }}">{{ .category.ColorName }}</option>
         {{ end }}
         <option value="#FFFFFF">White</option>
-        <option value="#B5F1CC" style="background-color: #B5F1CC ">Green</option>
-        <option value="#AAE3E2" style="background-color: #0d68d1">Cyan</option>
+        <option value="#B5F1CC">Green</option>
+        <option value="#AAE3E2">Cyan</option>
     </select>
     <img src="/images/edit-3.svg">
 
     {{ else }}
 
-    <form action="/category/new" method="post" enctype="multipart/form-data">
+    <form action="/category/new" enctype="multipart/form-data" method="post">
 
-        <label for="name">Kategorie-Name</label>
+        <label for="name">Kategorie-Name:</label>
         <br>
-        <input type="text" name="name" id="name" class="form-input" maxlength="100"
-               placeholder="Gemüse, Fleisch, Milchprodukte"
-               required> <img src="/images/edit-3.svg">
+        <input class="form-input" id="name" maxlength="100" name="name" placeholder="Gemüse, Milchprodukte" required
+               type="text"> <img src="/images/edit-3.svg">
 
         <br>
         <br>
 
         <label for="color">Farbe:</label>
         <br>
-        <select name="color" id="color">
+        <select id="color" name="color">
             <option value="#FFFFFF">White</option>
-            <option value="#B5F1CC" style="background-color: #B5F1CC ">Green</option>
-            <option value="#AAE3E2" style="background-color: #0d68d1">Cyan</option>
+            <option value="#B5F1CC">Green</option>
+            <option value="#AAE3E2">Cyan</option>
         </select>
         <img src="/images/edit-3.svg">
 
         {{ end }}
+
         <br>
         <br>
-        <input type="submit" value="Speichern" class="form-button" required>
+        <input class="form-button" required type="submit" value="Speichern">
 
     </form>
 
@@ -58,7 +59,7 @@
     <br>
 
     <form action="/category/{{ .category.ID }}/delete" method="post">
-        <input type="submit" value="Kategorie löschen" class="form-button">
+        <input class="form-button" type="submit" value="Kategorie löschen">
     </form>
     {{ end }}
 

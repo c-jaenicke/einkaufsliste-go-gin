@@ -5,6 +5,7 @@
 
 {{ if .newItems }}
 <table>
+
     <tr>
         <th>Name</th>
         <th>Notiz</th>
@@ -20,13 +21,14 @@
         <td>{{ .Amount }}</td>
         <td class="table-icon">
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="image" src="/images/check-square-white.svg" border="0" alt="Eingekauft"
-                       class="form-button-table-icon form-button-table">
+                <input alt="Eingekauft" border="0" class="form-button-table-icon form-button-table"
+                       src="/images/check-square-white.svg"
+                       type="image">
             </form>
         </td>
         <td class="table-icon">
             <a href="/item/{{ .ID }}/change">
-                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+                <img alt="Bearbeiten" class="form-button-table-icon form-button-table" src="/images/edit-white.svg">
             </a>
         </td>
     </tr>
@@ -59,13 +61,14 @@
         <td>{{ .Amount }}</td>
         <td>
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="image" src="/images/arrow-up-white.svg" border="0" alt="Nochmal kaufen"
-                       class="form-button-table-icon form-button-table">
+                <input alt="Nochmal kaufen" border="0" class="form-button-table-icon form-button-table"
+                       src="/images/arrow-up-white.svg"
+                       type="image">
             </form>
         </td>
         <td>
             <a href="/item/{{ .ID }}/change">
-                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+                <img alt="Bearbeiten" class="form-button-table-icon form-button-table" src="/images/edit-white.svg">
             </a>
         </td>
     </tr>

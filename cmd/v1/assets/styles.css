@@ -177,3 +177,8 @@ label {
     display: flex;
     justify-content: center;
 }
+
+.footer-item {
+    padding-left: 10px;
+    padding-right: 10px;
+}

@@ -51,7 +51,7 @@ func main() {
 	// NEW ITEM FORM
 	// Form for creating a new item
 	router.GET("/item/new", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "form.html", gin.H{
+		c.HTML(http.StatusOK, "item-form.html", gin.H{
 			"title":        "Neuen Eintrag anlegen",
 			"categoryList": postgres.GetAllCategories(),
 		})
@@ -71,7 +71,7 @@ func main() {
 	// Edit Name, Note and Category of an item
 	router.GET("item/:id/change", func(c *gin.Context) {
 		id := c.Params.ByName("id")
-		c.HTML(http.StatusOK, "form.html", gin.H{
+		c.HTML(http.StatusOK, "item-form.html", gin.H{
 			"title":        "Artikel Bearbeiten",
 			"item":         postgres.GetItem(id),
 			"categoryList": postgres.GetAllCategories(),
@@ -142,7 +142,7 @@ func main() {
 	// CATEGORY OVERVIEW
 	// Overview of categories
 	router.GET("/category", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "categories.html", gin.H{
+		c.HTML(http.StatusOK, "category-list.html", gin.H{
 			"categoryList": postgres.GetAllCategories(),
 			"itemList":     postgres.GetItems("new"),
 		})

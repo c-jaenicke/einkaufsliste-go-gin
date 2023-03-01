@@ -5,31 +5,37 @@
 
 {{ if .categoryList }}
 <table>
+
     <tr>
         <th>Name</th>
         <th>Menge</th>
         <th></th>
     </tr>
+
     {{ range $index, $category := .categoryList }}
     <tr>
+
         <td style="background-color: {{ $category.Color }}">
-            <a href="/category/{{ .ID }}" >{{ .Name}} </a>
+            <a href="/category/{{ .ID }}"> {{ .Name }} </a>
         </td>
-        <td>{{ (GetItemCount $category)  }}</td>
+        <td>{{ GetItemCount $category }}</td>
         <td class="table-icon">
             <a href="/category/{{ .ID }}/change">
-                <img src="/images/edit-white.svg" alt="Bearbeiten" class="form-button-table-icon form-button-table">
+                <img alt="Bearbeiten" class="form-button-table-icon form-button-table" src="/images/edit-white.svg">
             </a>
         </td>
+
     </tr>
     {{ end }}
+
 </table>
+
 {{else}}
 <p>Keine Kategorien gefunden!</p>
 {{end}}
 
 <form action="/category/new">
-    <input type="submit" value="Neue Kategorie anlegen" class="form-button">
+    <input class="form-button" type="submit" value="Neue Kategorie anlegen">
 </form>
 
 {{template "footer.html"}}
