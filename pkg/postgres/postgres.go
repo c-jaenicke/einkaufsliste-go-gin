@@ -124,8 +124,8 @@ func UpdateItemStatus(id string) {
 	}
 }
 
-func ChangeItem(id, name, note string, amount int) {
-	query := fmt.Sprintf("UPDATE items SET name = '%s', note = '%s', amount = '%d' WHERE id = '%s'", name, note, amount, id)
+func ChangeItem(id string, name string, note string, amount int, cat_id string) {
+	query := fmt.Sprintf("UPDATE items SET name = '%s', note = '%s', amount = '%d', cat_id = '%s' WHERE id = '%s';", name, note, amount, cat_id, id)
 	executeQuery(query)
 }
 
@@ -172,8 +172,8 @@ func GetItems(status string) []item.Item {
 //
 
 // CreateCategory creates a new category with the given name
-func CreateCategory(name string) {
-	query := fmt.Sprintf("INSERT INTO category (name) values ('%s');", name)
+func CreateCategory(name string, color string, colorName string) {
+	query := fmt.Sprintf("INSERT INTO category (name, color, color_name) values ('%s', '%s', '%s');", name, color, colorName)
 	executeQuery(query)
 }
 
@@ -188,7 +188,7 @@ func GetAllCategories() []category.Category {
 	var catList []category.Category
 	for rows.Next() {
 		var c category.Category
-		err := rows.Scan(&c.ID, &c.Name)
+		err := rows.Scan(&c.ID, &c.Name, &c.Color, &c.ColorName)
 		if err != nil {
 			logging.LogWarning("Failed to scan row: " + err.Error())
 		}
@@ -209,7 +209,7 @@ func GetCategory(id string) category.Category {
 
 	var c category.Category
 	for rows.Next() {
-		err := rows.Scan(&c.ID, &c.Name)
+		err := rows.Scan(&c.ID, &c.Name, &c.Color, &c.ColorName)
 		if err != nil {
 			logging.LogWarning("Failed to scan row: " + err.Error())
 		}

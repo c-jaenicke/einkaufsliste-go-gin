@@ -9,6 +9,21 @@
     <input type="text" name="name" id="name" class="form-input" maxlength="100" value="{{ .category.Name }}" required>
     <img src="/images/edit-3.svg">
 
+    <br>
+    <br>
+
+    <label for="color">Farbe:</label>
+    <br>
+    <select name="color" id="color">
+        {{ if ne .category.Color "#FFFFFF" }}
+            <option value="{{ .Color }}">{{ .category.ColorName }}</option>
+        {{ end }}
+        <option value="#FFFFFF">White</option>
+        <option value="#B5F1CC" style="background-color: #B5F1CC ">Green</option>
+        <option value="#AAE3E2" style="background-color: #0d68d1">Cyan</option>
+    </select>
+    <img src="/images/edit-3.svg">
+
     {{ else }}
 
     <form action="/category/new" method="post" enctype="multipart/form-data">
@@ -18,6 +33,18 @@
         <input type="text" name="name" id="name" class="form-input" maxlength="100"
                placeholder="Gemüse, Fleisch, Milchprodukte"
                required> <img src="/images/edit-3.svg">
+
+        <br>
+        <br>
+
+        <label for="color">Farbe:</label>
+        <br>
+        <select name="color" id="color">
+            <option value="#FFFFFF">White</option>
+            <option value="#B5F1CC" style="background-color: #B5F1CC ">Green</option>
+            <option value="#AAE3E2" style="background-color: #0d68d1">Cyan</option>
+        </select>
+        <img src="/images/edit-3.svg">
 
         {{ end }}
         <br>
@@ -29,10 +56,10 @@
     {{ if .category }}
     <br>
     <br>
-    <br>
 
-    <input type="submit" value="Kategorie löschen" formaction="/category/{{ .category.ID }}/delete" formmethod="post"
-           class="form-button">
+    <form action="/category/{{ .category.ID }}/delete" method="post">
+        <input type="submit" value="Kategorie löschen" class="form-button">
+    </form>
     {{ end }}
 
     {{template "footer.html"}}

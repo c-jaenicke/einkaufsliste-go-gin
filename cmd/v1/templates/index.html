@@ -12,14 +12,16 @@
         <th></th>
         <th></th>
     </tr>
+
     {{ range .newItems }}
     <tr>
-        <td>{{ .Name }}</td>
+        <td style="background-color: {{ GetItemColor (.) }}">{{ .Name }}</td>
         <td>{{ .Note }}</td>
         <td>{{ .Amount }}</td>
         <td class="table-icon">
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="image" src="/images/check-square-white.svg" border="0" alt="Eingekauft" class="form-button-table-icon form-button-table">
+                <input type="image" src="/images/check-square-white.svg" border="0" alt="Eingekauft"
+                       class="form-button-table-icon form-button-table">
             </form>
         </td>
         <td class="table-icon">
@@ -29,12 +31,15 @@
         </td>
     </tr>
     {{ end }}
+
 </table>
-{{else}}
+
+{{ else }}
 <p>Keine Einträge gefunden!</p>
-{{end}}
+{{ end }}
 
 <hr class="page-hr">
+
 <h3>Letzte Einkäufe</h3>
 
 {{ if .oldItems }}
@@ -46,14 +51,16 @@
         <th></th>
         <th></th>
     </tr>
+
     {{ range .oldItems }}
     <tr>
-        <td>{{ .Name }}</td>
+        <td style="background-color: {{ GetItemColor (.) }}">{{ .Name }}</td>
         <td>{{ .Note }}</td>
         <td>{{ .Amount }}</td>
         <td>
             <form action="/item/{{ .ID }}/update" method="post">
-                <input type="image" src="/images/arrow-up-white.svg" border="0" alt="Nochmal kaufen" class="form-button-table-icon form-button-table">
+                <input type="image" src="/images/arrow-up-white.svg" border="0" alt="Nochmal kaufen"
+                       class="form-button-table-icon form-button-table">
             </form>
         </td>
         <td>
@@ -63,9 +70,11 @@
         </td>
     </tr>
     {{ end }}
+
 </table>
-{{else}}
+
+{{ else }}
 <p>Keine Einträge gefunden!</p>
-{{end}}
+{{ end }}
 
 {{template "footer.html"}}

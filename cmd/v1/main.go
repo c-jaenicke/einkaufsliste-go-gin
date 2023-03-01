@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"shopping-list/pkg/category"
+	"shopping-list/pkg/item"
 	"shopping-list/pkg/logging"
 	"shopping-list/pkg/postgres"
 	"strconv"
@@ -28,7 +29,9 @@ func main() {
 	router.Static("/images", "./images")
 	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
 	router.SetFuncMap(template.FuncMap{
-		"GetItemCount": GetItemCount,
+		"GetItemCount":    GetItemCount,
+		"GetItemColor":    GetItemColor,
+		"GetCategoryName": GetCategoryName,
 	})
 	router.LoadHTMLGlob("./templates/*.html")
 
@@ -37,9 +40,10 @@ func main() {
 	// List of new items and old items
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"newItems":  postgres.GetItems("new"),
-			"oldItems":  postgres.GetItems("old"),
-			"testColor": "#000000",
+			"newItems":     postgres.GetItems("new"),
+			"oldItems":     postgres.GetItems("old"),
+			"categoryList": postgres.GetAllCategories(),
+			"testColor":    "#000000",
 		})
 	})
 
@@ -79,7 +83,9 @@ func main() {
 		name := c.PostForm("name")
 		note := c.PostForm("note")
 		amount, _ := strconv.Atoi(c.PostForm("amount"))
-		postgres.ChangeItem(id, name, note, amount)
+		cat_id := c.PostForm("category")
+		fmt.Println(cat_id)
+		postgres.ChangeItem(id, name, note, amount, cat_id)
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
@@ -126,7 +132,9 @@ func main() {
 
 	router.POST("/category/new", func(c *gin.Context) {
 		name := c.PostForm("name")
-		postgres.CreateCategory(name)
+		color := c.PostForm("color")
+		colorName := category.ColorMap[color]
+		postgres.CreateCategory(name, color, colorName)
 		c.Redirect(http.StatusMovedPermanently, "/")
 	})
 
@@ -204,4 +212,15 @@ func main() {
 func GetItemCount(c category.Category) int {
 	itemSlice := postgres.GetItemsInCategory(strconv.Itoa(c.ID), "new")
 	return len(itemSlice)
+}
+
+func GetItemColor(i item.Item) string {
+	category := postgres.GetCategory(strconv.Itoa(i.Cat_id))
+	return category.Color
+}
+
+func GetCategoryName(i item.Item) string {
+	id := strconv.Itoa(i.Cat_id)
+	return postgres.GetCategory(id).Name
+
 }

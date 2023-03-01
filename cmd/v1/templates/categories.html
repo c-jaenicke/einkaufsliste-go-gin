@@ -12,8 +12,8 @@
     </tr>
     {{ range $index, $category := .categoryList }}
     <tr>
-        <td>
-            <a href="/category/{{ .ID }}">{{ .Name}} </a>
+        <td style="background-color: {{ $category.Color }}">
+            <a href="/category/{{ .ID }}" >{{ .Name}} </a>
         </td>
         <td>{{ (GetItemCount $category)  }}</td>
         <td class="table-icon">
