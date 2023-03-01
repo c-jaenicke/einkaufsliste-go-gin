@@ -9,7 +9,13 @@ type Category struct {
 }
 
 var ColorMap = map[string]string{
-	"#FFFFFF": "White",
-	"#B5F1CC": "Green",
-	"#AAE3E2": "Cyan",
+	"#FFFFFF": "Weiss",
+	"#D3F8E2": "Grün",
+	"#E4C1F9": "Violet",
+	"#F694C1": "Rot",
+	"#EDE7B1": "Gelb",
+	"#A9DEF9": "Blau",
+	"#BAF2D8": "Türkis",
+	"#FFC4D6": "Pink",
+	"#FEC5BB": "Orange",
 }

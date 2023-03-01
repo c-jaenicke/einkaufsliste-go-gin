@@ -135,7 +135,7 @@ func main() {
 		color := c.PostForm("color")
 		colorName := category.ColorMap[color]
 		postgres.CreateCategory(name, color, colorName)
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.Redirect(http.StatusMovedPermanently, "/category")
 	})
 
 	//

@@ -17,11 +17,15 @@
     <br>
     <select id="color" name="color">
         {{ if ne .category.Color "#FFFFFF" }}
-        <option value="{{ .Color }}">{{ .category.ColorName }}</option>
+        <option value="{{ .Color }}">{{ .category.Color_name }}</option>
         {{ end }}
-        <option value="#FFFFFF">White</option>
-        <option value="#B5F1CC">Green</option>
-        <option value="#AAE3E2">Cyan</option>
+        <option value="#FFFFFF">Weiss</option>
+        <option value="#D3F8E2">Grün</option>
+        <option value="#E4C1F9">Violet</option>
+        <option value="#F694C1">Rot</option>
+        <option value="#EDE7B1">Gelb</option>
+        <option value="#A9DEF9">Blau</option>
+        <option value="#BAF2D8">Türkis</option>
     </select>
     <img src="/images/edit-3.svg">
 
@@ -40,9 +44,13 @@
         <label for="color">Farbe:</label>
         <br>
         <select id="color" name="color">
-            <option value="#FFFFFF">White</option>
-            <option value="#B5F1CC">Green</option>
-            <option value="#AAE3E2">Cyan</option>
+            <option value="#FFFFFF">Weiss</option>
+            <option value="#D3F8E2">Grün</option>
+            <option value="#E4C1F9">Violet</option>
+            <option value="#F694C1">Rot</option>
+            <option value="#EDE7B1">Gelb</option>
+            <option value="#A9DEF9">Blau</option>
+            <option value="#BAF2D8">Türkis</option>
         </select>
         <img src="/images/edit-3.svg">
 
@@ -53,6 +61,8 @@
         <input class="form-button" required type="submit" value="Speichern">
 
     </form>
+
+    {{ template "color-table.html" }}
 
     {{ if .category }}
     <br>
