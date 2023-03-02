@@ -54,37 +54,57 @@ func PingDatabase() bool {
 	}
 }
 
-// CreateTable create new table for given channel
-// runs at start to make sure tables exists
+// CreateTable creates new tables. Includes single value for category table.
 func CreateTable() {
-	// create table containing items
-	query := "create table if not exists items (" +
-		"id SERIAL PRIMARY KEY," +
-		"name VARCHAR(100) NOT NULL," +
-		"note VARCHAR(100) NOT NULL," +
-		"amount INTEGER," +
-		"status VARCHAR(10)" +
-		");"
+	query := `CREATE TABLE IF NOT EXISTS category
+	(
+		id   SERIAL PRIMARY KEY,
+		name VARCHAR(100),
+		color CHAR(7) DEFAULT '#FFFFFF',
+		color_name VARCHAR(30) DEFAULT 'WHITE'
+	);`
+	executeStatement(query)
 
-	executeQuery(query)
+	query = `INSERT INTO category (id, name) VALUES (0, 'Keine');`
+	executeStatement(query)
 
-	// TODO add query to include category table
-	// TODO add query to insert category "0 - None"
+	query = `create table if not exists items
+	(
+    	id     SERIAL PRIMARY KEY,
+    	name   VARCHAR(100) NOT NULL,
+    	note   VARCHAR(100) NOT NULL,
+    	amount INTEGER,
+    	status VARCHAR(10),
+    	cat_id INT DEFAULT '0',
+    	CONSTRAINT fk_cat_id
+        	FOREIGN KEY (cat_id)
+            	REFERENCES category(id)
+            	ON DELETE SET DEFAULT
+	);`
+	executeStatement(query)
+
 }
 
-// TODO rename this function, since it doesnt execute a query, but executes a command
-// executeQuery executes a query using a *connection from the pool
-func executeQuery(query string) {
+// executeStatement executes a statement on a table
+func executeStatement(query string) {
 	_, err := conn.Exec(context.Background(), query)
 	if err != nil {
-		logging.LogError("Failed to execute query", err)
+		logging.LogError("Failed to execute statement: "+query, err)
 	} else {
 		queryMessage := fmt.Sprintf("executed query successful!\n\t%s\n", query)
 		logging.LogInfo(queryMessage)
 	}
 }
 
-// TODO add executeQuery function here, which actually executes a query instead of function above
+// executeQuery executes a given query and returns the rows.
+func executeQuery(query string) pgx.Rows {
+	rows, err := conn.Query(context.Background(), query)
+	if err != nil {
+		logging.LogError("Failed to execute query: "+query, err)
+	}
+
+	return rows
+}
 
 //
 // ITEM FUNCTIONS
@@ -93,16 +113,13 @@ func executeQuery(query string) {
 // InsertItem inserts a new item into the database.
 func InsertItem(name string, note string, amount int, cat_id string) {
 	query := fmt.Sprintf("INSERT INTO items (name, note, amount, status, cat_id) VALUES ('%s','%s','%d','new','%s');", name, note, amount, cat_id)
-	executeQuery(query)
+	executeStatement(query)
 }
 
 // GetItem returns single item by given ID.
 func GetItem(id string) item.Item {
 	query := fmt.Sprintf("select * from items where id = %s", id)
-	rows, err := conn.Query(context.Background(), query)
-	if err != nil {
-		logging.LogWarning("Failed to find item with id " + id)
-	}
+	rows := executeQuery(query)
 
 	return rowsToItems(rows)[0]
 }
@@ -113,16 +130,16 @@ func UpdateItemStatus(id string) {
 
 	if i.Status == "new" {
 		query := fmt.Sprintf("UPDATE items SET status = 'old' WHERE id = '%s'", id)
-		executeQuery(query)
+		executeStatement(query)
 	} else if i.Status == "old" {
 		query := fmt.Sprintf("UPDATE items SET status = 'new' WHERE id = '%s'", id)
-		executeQuery(query)
+		executeStatement(query)
 	}
 }
 
 func ChangeItem(id string, name string, note string, amount int, cat_id string) {
 	query := fmt.Sprintf("UPDATE items SET name = '%s', note = '%s', amount = '%d', cat_id = '%s' WHERE id = '%s';", name, note, amount, cat_id, id)
-	executeQuery(query)
+	executeStatement(query)
 }
 
 // DeleteItemStatus changes the status of an item from new or old to deleted and from deleted to old.
@@ -132,10 +149,10 @@ func DeleteItemStatus(id string) {
 
 	if i.Status == "new" || i.Status == "old" {
 		query := fmt.Sprintf("UPDATE items SET status = 'deleted' WHERE id = '%s'", id)
-		executeQuery(query)
+		executeStatement(query)
 	} else if i.Status == "deleted" {
 		query := fmt.Sprintf("UPDATE items SET status = 'old' WHERE id = '%s'", id)
-		executeQuery(query)
+		executeStatement(query)
 	}
 }
 
@@ -143,10 +160,7 @@ func DeleteItemStatus(id string) {
 func GetItems(status string) []item.Item {
 	// use LIKE here to be able to match using wildcards
 	query := fmt.Sprintf("SELECT * FROM items WHERE status LIKE '%s'", status)
-	rows, err := conn.Query(context.Background(), query)
-	if err != nil {
-		logging.LogWarning("Failed to query for items with status " + status)
-	}
+	rows := executeQuery(query)
 
 	return rowsToItems(rows)
 }
@@ -174,16 +188,13 @@ func rowsToItems(rows pgx.Rows) []item.Item {
 // CreateCategory creates a new category with the given name
 func CreateCategory(name string, color string, colorName string) {
 	query := fmt.Sprintf("INSERT INTO category (name, color, color_name) values ('%s', '%s', '%s');", name, color, colorName)
-	executeQuery(query)
+	executeStatement(query)
 }
 
 // GetAllCategories gets slice of all categories that exist
 func GetAllCategories() []category.Category {
 	query := fmt.Sprintf("SELECT * FROM category;")
-	rows, err := conn.Query(context.Background(), query)
-	if err != nil {
-		logging.LogWarning("Failed to query all categories " + query)
-	}
+	rows := executeQuery(query)
 
 	return rowsToCategory(rows)
 }
@@ -191,10 +202,7 @@ func GetAllCategories() []category.Category {
 // GetCategory gets category object from given id
 func GetCategory(id string) category.Category {
 	query := fmt.Sprintf("SELECT * FROM category WHERE id = '%s';", id)
-	rows, err := conn.Query(context.Background(), query)
-	if err != nil {
-		logging.LogWarning("Failed to query all categories " + query)
-	}
+	rows := executeQuery(query)
 
 	return rowsToCategory(rows)[0]
 }
@@ -202,17 +210,13 @@ func GetCategory(id string) category.Category {
 // ChangeCategory updates name of a category
 func ChangeCategory(id, name string) {
 	query := fmt.Sprintf("UPDATE category SET name = '%s' WHERE id = '%s'", name, id)
-	executeQuery(query)
+	executeStatement(query)
 }
 
 // GetItemsInCategory returns slice of all items in a category with the given status
 func GetItemsInCategory(id string, status string) []item.Item {
 	query := fmt.Sprintf("SELECT * FROM items WHERE cat_id = '%s' AND status LIKE '%s';", id, status)
-
-	rows, err := conn.Query(context.Background(), query)
-	if err != nil {
-		logging.LogWarning("Failed query" + query)
-	}
+	rows := executeQuery(query)
 
 	return rowsToItems(rows)
 }
@@ -220,7 +224,7 @@ func GetItemsInCategory(id string, status string) []item.Item {
 // DeleteCategory deletes an existing category from the table
 func DeleteCategory(id string) {
 	query := fmt.Sprintf("DELETE FROM category WHERE id = '%s';", id)
-	executeQuery(query)
+	executeStatement(query)
 }
 
 // rowsToCategory transforms rows into category objects. Returned as a slice of category
