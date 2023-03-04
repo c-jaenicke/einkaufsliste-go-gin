@@ -25,8 +25,9 @@ func CreateConnection() {
 
 	var err error
 	// TODO change to env again here
-	//conn, err := pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
-	conn, err = pgxpool.New(context.Background(), "postgresql://test:asdasd@172.22.0.2:5432/shopping")
+	conn, err := pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
+	// Line for testing locally on test db
+	//conn, err = pgxpool.New(context.Background(), "postgresql://test:asdasd@172.22.0.2:5432/shopping")
 	if err != nil {
 		logging.LogPanic("Failed to *connect to database", err)
 		os.Exit(1)

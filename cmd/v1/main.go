@@ -20,7 +20,7 @@ func main() {
 	//postgres.CreateTable()
 
 	// uncomment line to switch to release mode
-	//gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.SetFuncMap(template.FuncMap{
 		"upper": strings.ToUpper,
@@ -45,6 +45,27 @@ func main() {
 			"categoryList": postgres.GetAllCategories(),
 			"testColor":    "#000000",
 		})
+	})
+
+	//
+	// MANAGE
+	// Page for bulk deleting items
+	router.GET("/manage", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "manage.html", gin.H{
+			"itemList":     postgres.GetItems("%"),
+			"newItems":     postgres.GetItems("new"),
+			"oldItems":     postgres.GetItems("old"),
+			"deletedItems": postgres.GetItems("deleted"),
+			"categoryList": postgres.GetAllCategories(),
+		})
+	})
+
+	//
+	// DELETE ALL ITEMS
+	// NOT REVERSIBLE! Truncates the items table
+	router.POST("manage/deleteall", func(c *gin.Context) {
+		postgres.DeleteAllItems()
+		c.Redirect(http.StatusMovedPermanently, "/manage")
 	})
 
 	//
@@ -97,19 +118,6 @@ func main() {
 		postgres.UpdateItemStatus(id)
 		fmt.Println(c.Request.URL.Path)
 		c.Redirect(http.StatusMovedPermanently, "/")
-	})
-
-	//
-	// MANAGE
-	// Page for bulk deleting items
-	router.GET("/manage", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "manage.html", gin.H{
-			"itemList":     postgres.GetItems("%"),
-			"newItems":     postgres.GetItems("new"),
-			"oldItems":     postgres.GetItems("old"),
-			"deletedItems": postgres.GetItems("deleted"),
-			"categoryList": postgres.GetAllCategories(),
-		})
 	})
 
 	//
@@ -197,14 +205,6 @@ func main() {
 		postgres.UpdateItemStatus(iid)
 		fmt.Println(c.Request.URL.Path)
 		c.Redirect(http.StatusMovedPermanently, "/category/"+id)
-	})
-
-	//
-	// DELETE ALL ITEMS
-	// NOT REVERSIBLE! Truncates the items table
-	router.POST("manage/deleteall", func(c *gin.Context) {
-		postgres.DeleteAllItems()
-		c.Redirect(http.StatusMovedPermanently, "/manage")
 	})
 
 	// ALL ROUTES MUST BE ABOVE HERE

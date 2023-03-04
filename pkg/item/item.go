@@ -1,3 +1,5 @@
+// Package item
+// Contains struct which embodies an item
 package item
 
 type Item struct {

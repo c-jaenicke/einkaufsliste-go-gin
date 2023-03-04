@@ -1,3 +1,5 @@
+// Package category
+// Contains struct wich embodies a category and a map for looking up color names
 package category
 
 type Category struct {
@@ -8,6 +10,7 @@ type Category struct {
 	Color_name string
 }
 
+// ColorMap is a map for looking up which name references which color
 var ColorMap = map[string]string{
 	"#FFFFFF": "Weiss",
 	"#D3F8E2": "Grün",
