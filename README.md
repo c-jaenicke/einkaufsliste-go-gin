@@ -70,7 +70,9 @@ Possibly more database connectors in the future.
 Deleting items in the "Manage View" doesnt remove the entry from the database!
 This is intended behaviour. You can use the data you create to analyze your buying behaviour.
 
-If you really want to delete everything, just drop the tables.
+**The `DELETE ALL BUTTON` at the bottom of the "Manage view" does delete all items permanently however! So use with caution.**
+
+If you really want to delete everything, just truncate the tables.
 
 ## Icons
 
