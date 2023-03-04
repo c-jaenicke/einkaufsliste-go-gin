@@ -1,83 +1,12 @@
-{{template "header.html"}}
+{{ template "header.html" }}
 <h2>Einkaufsliste</h2>
 
 <h3>Zu Besorgen: {{ len .newItems }} Artikel</h3>
-
-{{ if .newItems }}
-<table>
-
-    <tr>
-        <th>Name</th>
-        <th>Notiz</th>
-        <th class="table-small-column">Menge</th>
-        <th class="table-small-column"></th>
-        <th class="table-small-column"></th>
-    </tr>
-
-    {{ range .newItems }}
-    <tr>
-        <td style="background-color: {{ GetItemColor (.) }}">{{ .Name }}</td>
-        <td>{{ .Note }}</td>
-        <td class="table-small-column">{{ .Amount }}</td>
-        <td class="table-icon table-small-column">
-            <form action="/item/{{ .ID }}/update" method="post">
-                <input alt="Eingekauft" border="0" class="form-button-table-icon form-button-table"
-                       src="/images/check-square-white.svg"
-                       type="image">
-            </form>
-        </td>
-        <td class="table-icon table-small-column">
-            <a href="/item/{{ .ID }}/change">
-                <img alt="Bearbeiten" class="form-button-table-icon form-button-table" src="/images/edit-white.svg">
-            </a>
-        </td>
-    </tr>
-    {{ end }}
-
-</table>
-
-{{ else }}
-<p>Keine Einträge gefunden!</p>
-{{ end }}
+{{ template "item-listing-new.html" .newItems }}
 
 <hr class="page-hr">
 
 <h3>Letzte Einkäufe</h3>
+{{ template "item-listing-old.html" .oldItems }}
 
-{{ if .oldItems }}
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Notiz</th>
-        <th class="table-small-column">Menge</th>
-        <th class="table-small-column"></th>
-        <th class="table-small-column"></th>
-    </tr>
-
-    {{ range .oldItems }}
-    <tr>
-        <td style="background-color: {{ GetItemColor (.) }}">{{ .Name }}</td>
-        <td>{{ .Note }}</td>
-        <td class="table-small-column">{{ .Amount }}</td>
-        <td class="table-small-column">
-            <form action="/item/{{ .ID }}/update" method="post">
-                <input alt="Nochmal kaufen" border="0" class="form-button-table-icon form-button-table"
-                       src="/images/arrow-up-white.svg"
-                       type="image">
-            </form>
-        </td>
-        <td class="table-small-column">
-            <a href="/item/{{ .ID }}/change">
-                <img alt="Bearbeiten" class="form-button-table-icon form-button-table" src="/images/edit-white.svg">
-            </a>
-        </td>
-    </tr>
-    {{ end }}
-
-</table>
-
-{{ else }}
-<p>Keine Einträge gefunden!</p>
-{{ end }}
-
-{{template "footer.html"}}
+{{ template "footer.html" }}
