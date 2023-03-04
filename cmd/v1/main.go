@@ -199,6 +199,14 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/category/"+id)
 	})
 
+	//
+	// DELETE ALL ITEMS
+	// NOT REVERSIBLE! Truncates the items table
+	router.POST("manage/deleteall", func(c *gin.Context) {
+		postgres.DeleteAllItems()
+		c.Redirect(http.StatusMovedPermanently, "/manage")
+	})
+
 	// ALL ROUTES MUST BE ABOVE HERE
 	// START GIN
 	//

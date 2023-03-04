@@ -181,6 +181,12 @@ func rowsToItems(rows pgx.Rows) []item.Item {
 	return itemSlice
 }
 
+// DeleteAllItems permanently deletes all entries in the items table. NOT REVERSIBLE
+func DeleteAllItems() {
+	query := fmt.Sprintf("TRUNCATE items;")
+	executeStatement(query)
+}
+
 //
 // CATEGORY FUNCTIONS
 //
