@@ -3,11 +3,11 @@
 package category
 
 type Category struct {
-	ID         int
-	Name       string
-	Counter    int
-	Color      string
-	Color_name string
+	ID         int    `json:"id"`
+	Name       string `json:"name"`
+	Counter    int    `json:"counter"`
+	Color      string `json:"color"`
+	Color_name string `json:"color_Name"`
 }
 
 // ColorMap is a map for looking up which name references which color

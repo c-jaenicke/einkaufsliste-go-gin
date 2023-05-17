@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+# postgresql database
+  db:
+    container_name: postgres-test
+    image: postgres:latest
+    restart: unless-stopped
+    hostname: postgres-test
+    environment:
+      - POSTGRES_PASSWORD=asdasd
+      - POSTGRES_USER=test
+      - POSTGRES_DB=shopping
+    volumes:
+      - postgres-test-volume:/var/lib/postgresql/data
+
+volumes:
+  postgres-test-volume:
+
+networks:
+  default:
+    driver: bridge
