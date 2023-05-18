@@ -33,30 +33,81 @@ func main() {
 		"GetCategoryName": GetCategoryName,
 	})
 
-	// TODO  get all items
-	router.GET("/items/new", func(c *gin.Context) {
-		items := postgres.GetItems("new")
-		c.IndentedJSON(http.StatusOK, items)
+	// Get all items with give status
+	router.GET("/items/:status", func(c *gin.Context) {
+		status := c.Params.ByName("status")
+		c.IndentedJSON(http.StatusOK, postgres.GetItemsWithStatus(status))
 	})
 
+	// Get all items, regardless of status
+	router.GET("/items/all", func(c *gin.Context) {
+		c.IndentedJSON(http.StatusOK, postgres.GetAllItems())
+	})
+
+	// Post new item, 201 on successful post, 400 on error
 	router.POST("item/new", func(c *gin.Context) {
 		var item item.Item
 		if err := c.BindJSON(&item); err != nil {
-			logging.LogError("error creating new item", err)
+			logging.LogError("Unable to create new item from body", err)
 			c.IndentedJSON(http.StatusBadRequest, nil)
 		}
 
-		// TODO improve this, move function to postgres module InsertItemObj
-		postgres.InsertItem(item.Name, item.Note, item.Amount, strconv.Itoa(item.Cat_id))
+		postgres.SaveItem(item)
 		c.IndentedJSON(http.StatusCreated, item)
 	})
 
-	// TODO  post a new item
-	// TODO  put an existing item
-	// TODO  delete an item
+	// Put an existing item
+	router.PUT("/item/:id/update", func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Params.ByName("id"))
+		if err != nil {
+			logging.LogError("Failed to convert ID to int", err)
+			c.IndentedJSON(http.StatusBadRequest, nil)
+		}
+
+		var item item.Item
+		if err := c.BindJSON(&item); err != nil {
+			logging.LogError("error updating an item", err)
+			c.IndentedJSON(http.StatusBadRequest, nil)
+		}
+
+		postgres.UpdateItem(item, id)
+		c.IndentedJSON(http.StatusOK, item)
+	})
+
+	// Delete an item
+	router.DELETE("/item/:id/delete", func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Params.ByName("id"))
+		if err != nil {
+			logging.LogError("Failed to convert ID to int", err)
+			c.IndentedJSON(http.StatusBadRequest, nil)
+		}
+		postgres.DeleteItem(id)
+		c.IndentedJSON(http.StatusOK, nil)
+	})
+
+	// GET ALL CATEGORIES
+	//
+	router.GET("/categories", func(c *gin.Context) {
+		categories := postgres.GetAllCategories()
+		c.IndentedJSON(http.StatusOK, categories)
+	})
+
+	// Change item status from old to new
+	router.POST("/item/:id/switch", func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Params.ByName("id"))
+		if err != nil {
+			logging.LogError("Failed to convert ID to int", err)
+			c.IndentedJSON(http.StatusBadRequest, nil)
+		}
+		postgres.SwitchItemStatus(id)
+		c.IndentedJSON(http.StatusOK, nil)
+	})
 	// TODO get all categories
+
 	// TODO post a new category
+
 	// TODO put an existing category
+
 	// TODO delete a category
 
 	// ALL ROUTES MUST BE ABOVE HERE
