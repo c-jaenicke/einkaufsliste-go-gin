@@ -62,7 +62,7 @@ func GetAllItems() []item.Item {
 
 // GetItemsWithStatus get all items with the given status. Can take '%' as wildcard for all statuses
 func GetItemsWithStatus(status string) []item.Item {
-	query := fmt.Sprintf("SELECT * FORM items WHERE status = '%s';", status)
+	query := fmt.Sprintf("SELECT * FROM items WHERE status = '%s';", status)
 	rows := executeQuery(query)
 
 	return rowsToItems(rows)
