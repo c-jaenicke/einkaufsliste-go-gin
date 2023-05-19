@@ -53,7 +53,7 @@ func main() {
 		}
 
 		postgres.SaveItem(item)
-		c.IndentedJSON(http.StatusCreated, item)
+		c.IndentedJSON(http.StatusCreated, postgres.GetAllItems())
 	})
 
 	// Put an existing item
@@ -82,7 +82,7 @@ func main() {
 			c.IndentedJSON(http.StatusBadRequest, nil)
 		}
 		postgres.DeleteItem(id)
-		c.IndentedJSON(http.StatusOK, nil)
+		c.IndentedJSON(http.StatusOK, postgres.GetAllItems())
 	})
 
 	// GET ALL CATEGORIES
@@ -100,7 +100,7 @@ func main() {
 			c.IndentedJSON(http.StatusBadRequest, nil)
 		}
 		postgres.SwitchItemStatus(id)
-		c.IndentedJSON(http.StatusOK, nil)
+		c.IndentedJSON(http.StatusOK, postgres.GetAllItems())
 	})
 	// TODO get all categories
 
