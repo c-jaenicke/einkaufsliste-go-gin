@@ -4,7 +4,6 @@ package postgres
 
 import (
 	"context"
-	"fmt"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"os"
@@ -84,9 +83,6 @@ func executeStatement(query string) {
 	_, err := conn.Exec(context.Background(), query)
 	if err != nil {
 		logging.LogError("Failed to execute statement: "+query, err)
-	} else {
-		queryMessage := fmt.Sprintf("executed query successful!\n\t%s\n", query)
-		logging.LogInfo(queryMessage)
 	}
 }
 
