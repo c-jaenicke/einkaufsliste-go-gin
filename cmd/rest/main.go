@@ -2,14 +2,12 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"html/template"
 	"net/http"
 	"shopping-list/pkg/category"
 	"shopping-list/pkg/item"
 	"shopping-list/pkg/logging"
 	"shopping-list/pkg/postgres"
 	"strconv"
-	"strings"
 )
 
 func main() {
@@ -20,18 +18,8 @@ func main() {
 
 	// uncomment line to switch to release mode
 	gin.SetMode(gin.DebugMode)
+	//gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-	router.SetFuncMap(template.FuncMap{
-		"upper": strings.ToUpper,
-	})
-	router.Static("/assets", "./assets")
-	router.Static("/images", "./images")
-	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
-	router.SetFuncMap(template.FuncMap{
-		"GetItemCount":    GetItemCount,
-		"GetItemColor":    GetItemColor,
-		"GetCategoryName": GetCategoryName,
-	})
 
 	// Get all items with give status
 	router.GET("/items/:status", func(c *gin.Context) {

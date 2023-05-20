@@ -1,0 +1,27 @@
+## BUILD
+FROM golang:1.20 as build-stage
+
+#RUN apk update && apk add --no-cache git
+
+WORKDIR /app
+
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+
+COPY cmd/rest/ ./
+COPY pkg/ ./pkg/
+RUN CGO_ENABLED=0 GOOS=linux go build -o /rest
+#RUN go build -o /rest
+
+## DEPLOY
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=build-stage /rest /app/rest
+
+#ENV GIN_MODE release
+EXPOSE 8080
+
+CMD [ "/app/rest" ]

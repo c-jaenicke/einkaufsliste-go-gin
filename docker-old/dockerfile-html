@@ -1,3 +1,4 @@
+# DOCKERFILE FOR V1 PACKAGE
 ## BUILD
 FROM golang:1.20-alpine:latest as builder
 
@@ -5,13 +6,13 @@ RUN apk update && apk add --no-cache git
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
+COPY ../go.mod ./
+COPY ../go.sum ./
 
 RUN go mod download
 
-COPY cmd/v1/ ./
-COPY pkg/ ./pkg/
+COPY ../cmd/v1 ./
+COPY ../pkg ./pkg/
 
 RUN go build -o /shopping
 

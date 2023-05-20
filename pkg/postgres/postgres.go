@@ -17,9 +17,9 @@ func CreateConnection() {
 	logging.LogInfo("Attempting to *connect to database")
 
 	var err error
-	// conn, err := pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
+	conn, err = pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
 	// Line for testing locally on test db
-	conn, err = pgxpool.New(context.Background(), "postgresql://test:asdasd@172.21.0.2:5432/shopping")
+	//conn, err = pgxpool.New(context.Background(), "postgresql://test:asdasd@172.21.0.2:5432/shopping")
 	if err != nil {
 		logging.LogPanic("Failed to *connect to database", err)
 		os.Exit(1)
@@ -49,37 +49,25 @@ func PingDatabase() bool {
 
 // CreateTable creates new tables. Includes single value for category table.
 func CreateTable() {
-	query := `CREATE TABLE IF NOT EXISTS category
-	(
-		id   SERIAL PRIMARY KEY,
-		name VARCHAR(100),
-		color CHAR(7) DEFAULT '#FFFFFF',
-		color_name VARCHAR(30) DEFAULT 'WHITE'
-	);`
+	logging.LogInfo("Creating category table")
+	var query = "CREATE TABLE IF NOT EXISTS category (id SERIAL PRIMARY KEY, name VARCHAR(100), color CHAR(7) DEFAULT '#FFFFFF', color_name VARCHAR(30) DEFAULT 'WHITE');"
 	executeStatement(query)
+	logging.LogInfo("Done creating category table")
 
-	query = `INSERT INTO category (id, name) VALUES (0, 'Keine');`
+	logging.LogInfo("Inserting standard category")
+	query = "INSERT INTO category (id, name) VALUES (0, 'Keine');"
 	executeStatement(query)
+	logging.LogInfo("Done inserting standard category")
 
-	query = `create table if not exists items
-	(
-    	id     SERIAL PRIMARY KEY,
-    	name   VARCHAR(100) NOT NULL,
-    	note   VARCHAR(100) NOT NULL,
-    	amount INTEGER,
-    	status VARCHAR(10) DEFAULT 'new',
-    	cat_id INT DEFAULT '0',
-    	CONSTRAINT fk_cat_id
-        	FOREIGN KEY (cat_id)
-            	REFERENCES category(id)
-            	ON DELETE SET DEFAULT
-	);`
+	logging.LogInfo("Creating item table")
+	query = "create table if not exists items ( id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, note VARCHAR(100) NOT NULL, amount INTEGER, status VARCHAR(10) DEFAULT 'new', cat_id INT DEFAULT '0', CONSTRAINT fk_cat_id FOREIGN KEY (cat_id) REFERENCES category(id) ON DELETE SET DEFAULT );"
 	executeStatement(query)
-
+	logging.LogInfo("Done creating tables")
 }
 
 // executeStatement executes a statement on a table
 func executeStatement(query string) {
+	logging.LogInfo("Executing STATEMENT " + query)
 	_, err := conn.Exec(context.Background(), query)
 	if err != nil {
 		logging.LogError("Failed to execute statement: "+query, err)
@@ -88,6 +76,7 @@ func executeStatement(query string) {
 
 // executeQuery executes a given query and returns the rows.
 func executeQuery(query string) pgx.Rows {
+	logging.LogInfo("Executing QUERY " + query)
 	rows, err := conn.Query(context.Background(), query)
 	if err != nil {
 		logging.LogError("Failed to execute query: "+query, err)
