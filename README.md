@@ -1,6 +1,12 @@
-# shopping-list-go-gin
+# einkaufsliste-go-gin
 
-A simple shopping list webapp for managing items that should be bought.
+A simple shopping list application that saves entries in a PostgreSQL database. It can serve those entries using a REST API or simple HTML pages and forms.
+
+## Frontend
+
+A basic vue.js frontend exists [c-jaenicke/einkaufsliste-vue](https://github.com/c-jaenicke/einkaufsliste-vue).
+
+Possibly more to come.
 
 ## Authentication
 
@@ -18,7 +24,7 @@ You can host the webapp using the included `docker-compose`. Be aware, you need 
 Fields marked with `<TEXT>` need to be adjusted!
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -61,23 +67,8 @@ Everything but the code is in german, fork it and translate it if you want to.
 
 The site requires a PostgreSQL database to save entries.
 
-Possibly more database connectors in the future.
-
 <sup><sub>Because im lazy i only did PostgreSQL.</sub></sup>
-
-### Deletion of Item Entries
-
-Deleting items in the "Manage View" doesnt remove the entry from the database!
-This is intended behaviour. You can use the data you create to analyze your buying behaviour.
-
-**The `DELETE ALL BUTTON` at the bottom of the "Manage view" does delete all items permanently however! So use with caution.**
-
-If you really want to delete everything, just truncate the tables.
 
 ## Icons
 
 All used icons are taken from [https://feathericons.com/](https://feathericons.com/)
-
-## Dependencies
-
-Check the `go.mod` for libraries the webapp uses.
