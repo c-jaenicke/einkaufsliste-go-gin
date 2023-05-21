@@ -16,7 +16,6 @@ func main() {
 	postgres.CreateConnection()
 	postgres.CreateTable()
 
-	// uncomment line to switch to release mode
 	gin.SetMode(gin.DebugMode)
 	//gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
