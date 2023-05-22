@@ -1,5 +1,13 @@
-version: '3.8'
+# EINKAUFSLISTE-GO-GIN COMPOSE
+# Deploys einkaufsliste-vue as frontend,
+#   einkaufsliste-go-gin as backend,
+#   postgresql as database
+# Creates internal network int-einkaufsliste-net
+# db:
+#   data: VOLUME einkaufsliste-db-volume
 
+
+version: '3.8'
 
 services:
   # postgresql database
@@ -9,6 +17,7 @@ services:
     restart: unless-stopped
     hostname: einkaufsliste-db
     environment:
+      # CHANGE VALUES HERE
       - POSTGRES_PASSWORD=asdasd
       - POSTGRES_USER=test
       - POSTGRES_DB=shopping
@@ -20,6 +29,8 @@ services:
       int-einkaufsliste-net:
         ipv4_address: 172.26.1.3
 
+  # einkaufsliste-vue frontend service
+  # https://github.com/c-jaenicke/einkaufsliste-vue
   frontend:
     container_name: einkaufsliste-frontend
     image: einkaufsliste-vue:latest
@@ -31,7 +42,10 @@ services:
     networks:
       int-einkaufsliste-net:
       default:
+    # labels:
 
+  # einkaufsliste-go-gin api service
+  # https://github.com/c-jaenicke/einkaufsliste-go-gin
   api:
     depends_on:
       - db
@@ -44,29 +58,25 @@ services:
     #expose:
     #  - 8080
     environment:
-      #- POSTGRES_URL=postgresql://test:asdasd@172.21.0.2:5432/shopping
-      - POSTGRES_URL=postgresql://test:asdasd@172.26.1.3:5432/shopping
+      # CHANGE VALUES HERE
+      - POSTGRES_URL=postgresql://test:asdasd@172.21.0.2:5432/shopping
     networks:
       int-einkaufsliste-net:
         ipv4_address: 172.26.1.4
       default:
       shopping-list-go-gin_default:
 
-
-
 volumes:
+  # volume for postgresql database
   einkaufsliste-db-volume:
 
 networks:
+  # bridge network to host machine
   default:
     driver: bridge
+  # internal network for communication between frontend to api, and api to database
   int-einkaufsliste-net:
     driver: bridge
     ipam:
       config:
         - subnet: "172.26.1.0/28"
-#    driver_opts:
-#      --subnet: "172.26.1.0/28"
-  shopping-list-go-gin_default:
-    external: true
-    name: shopping-list-go-gin_default

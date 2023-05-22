@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"shopping-list/pkg/category"
@@ -20,6 +21,11 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
+	// use DEFAULT config for gin-contrib/cors middleware
+	// ATTENTION: THIS ALLOWS ALL ORIGINS
+	// see https://github.com/gin-contrib/cors for more information
+	router.Use(cors.Default())
+
 	// Get all items with give status
 	router.GET("/items/:status", func(c *gin.Context) {
 		status := c.Params.ByName("status")
@@ -32,7 +38,7 @@ func main() {
 	})
 
 	// Post new item, 201 on successful post, 400 on error
-	router.POST("item/new", func(c *gin.Context) {
+	router.POST("/item/new", func(c *gin.Context) {
 		var item item.Item
 		if err := c.BindJSON(&item); err != nil {
 			logging.LogError("Unable to create new item from body", err)
