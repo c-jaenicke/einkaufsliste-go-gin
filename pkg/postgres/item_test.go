@@ -10,6 +10,7 @@ var i = item.Item{
 	Note:   "TEST ITEM",
 	Amount: 1,
 	Status: "new",
+	Store:  "edeka",
 	Cat_id: 0,
 }
 

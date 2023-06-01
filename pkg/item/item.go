@@ -9,5 +9,6 @@ type Item struct {
 	Note   string `json:"note"`   // note on the item itself
 	Amount int    `json:"amount"` // how much of an item should be bought
 	Status string `json:"status"` // status of item, can be [new old deleted] can be expanded throughout development
+	Store  string `json:"store"`
 	Cat_id int    `json:"cat_Id"` // foreign key, id of category, snake_case to keep consistent with database schema
 }

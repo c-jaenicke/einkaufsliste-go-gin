@@ -9,13 +9,13 @@ import (
 
 // SaveItem save a single item
 func SaveItem(item item.Item) {
-	query := fmt.Sprintf("INSERT INTO items (name, note, amount, status, cat_id) VALUES ('%s','%s','%d','new','%d');", item.Name, item.Note, item.Amount, item.Cat_id)
+	query := fmt.Sprintf("INSERT INTO items (name, note, amount, status, cat_id, store) VALUES ('%s','%s','%d','new','%d', '%s');", item.Name, item.Note, item.Amount, item.Cat_id, item.Store)
 	executeStatement(query)
 }
 
 // UpdateItem update a single item
 func UpdateItem(item item.Item, id int) {
-	query := fmt.Sprintf("UPDATE items SET name = '%s', note = '%s', amount = '%d', cat_id = '%d' WHERE id = '%d';", item.Name, item.Note, item.Amount, item.Cat_id, id)
+	query := fmt.Sprintf("UPDATE items SET name = '%s', note = '%s', amount = '%d', cat_id = '%d', store = '%s' WHERE id = '%d';", item.Name, item.Note, item.Amount, item.Cat_id, item.Store, id)
 	executeStatement(query)
 }
 
@@ -73,7 +73,7 @@ func rowsToItems(rows pgx.Rows) []item.Item {
 	var itemSlice []item.Item
 	for rows.Next() {
 		var i item.Item
-		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status, &i.Cat_id)
+		err := rows.Scan(&i.ID, &i.Name, &i.Note, &i.Amount, &i.Status, &i.Store, &i.Cat_id)
 		if err != nil {
 			logging.LogWarning("Failed to scan row into item object: " + err.Error())
 		}

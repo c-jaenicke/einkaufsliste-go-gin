@@ -19,7 +19,7 @@ func CreateConnection() {
 	var err error
 	conn, err = pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
 	// Line for testing locally on test db
-	//conn, err = pgxpool.New(context.Background(), "postgresql://test:asdasd@172.21.0.2:5432/shopping")
+	//conn, err = pgxpool.New(context.Background(), "postgresql://test:asdasd@172.24.0.2:5432/shopping")
 	if err != nil {
 		logging.LogPanic("Failed to *connect to database", err)
 		os.Exit(1)
@@ -50,17 +50,28 @@ func PingDatabase() bool {
 // CreateTable creates new tables. Includes single value for category table.
 func CreateTable() {
 	logging.LogInfo("Creating category table")
-	var query = "CREATE TABLE IF NOT EXISTS category (id SERIAL PRIMARY KEY, name VARCHAR(100), color CHAR(7) DEFAULT '#FFFFFF', color_name VARCHAR(30) DEFAULT 'WHITE');"
+	var query = `CREATE TABLE IF NOT EXISTS category (
+    id SERIAL PRIMARY KEY, name VARCHAR(100), 
+    color CHAR(7) DEFAULT '#FFFFFF', 
+    color_name VARCHAR(30) DEFAULT 'WHITE');`
 	executeStatement(query)
 	logging.LogInfo("Done creating category table")
 
 	logging.LogInfo("Inserting standard category")
-	query = "INSERT INTO category (id, name) VALUES (0, 'Keine');"
+	query = `INSERT INTO category (id, name) VALUES (0, 'Keine');`
 	executeStatement(query)
 	logging.LogInfo("Done inserting standard category")
 
 	logging.LogInfo("Creating item table")
-	query = "create table if not exists items ( id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, note VARCHAR(100) NOT NULL, amount INTEGER, status VARCHAR(10) DEFAULT 'new', cat_id INT DEFAULT '0', CONSTRAINT fk_cat_id FOREIGN KEY (cat_id) REFERENCES category(id) ON DELETE SET DEFAULT );"
+	query = `create table if not exists items ( 
+    id SERIAL PRIMARY KEY, 
+    name VARCHAR(100) NOT NULL, 
+    note VARCHAR(100) NOT NULL, 
+    amount INTEGER, 
+    status VARCHAR(10) DEFAULT 'new', 
+    store VARCHAR(10) DEFAULT '',
+    cat_id INT DEFAULT '0', 
+    CONSTRAINT fk_cat_id FOREIGN KEY (cat_id) REFERENCES category(id) ON DELETE SET DEFAULT );`
 	executeStatement(query)
 	logging.LogInfo("Done creating tables")
 }

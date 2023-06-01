@@ -1,14 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
 	"shopping-list/pkg/category"
 	"shopping-list/pkg/item"
 	"shopping-list/pkg/logging"
 	"shopping-list/pkg/postgres"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -21,24 +24,39 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
+	trustedProxies := strings.Split(os.Getenv("TRUSTED_PROXIES"), ",")
+	router.SetTrustedProxies(trustedProxies)
+
 	// use DEFAULT config for gin-contrib/cors middleware
 	// ATTENTION: THIS ALLOWS ALL ORIGINS
 	// see https://github.com/gin-contrib/cors for more information
-	router.Use(cors.Default())
+	// router.Use(cors.Default())
+
+	// Line for hardcoding test origins
+	//allowedOrigins := []string{}
+
+	// Get allowed origins from environment
+	allowedOrigins := strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",")
+	logging.LogInfo(fmt.Sprintf("Allowed origins: %v", allowedOrigins))
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: allowedOrigins,
+		AllowMethods: []string{"GET", "PUT", "POST", "DELETE"},
+		AllowHeaders: []string{"Origin", "Content-Type"},
+	}))
 
 	// Get all items with give status
-	router.GET("/items/:status", func(c *gin.Context) {
+	router.GET("items/:status", func(c *gin.Context) {
 		status := c.Params.ByName("status")
 		c.IndentedJSON(http.StatusOK, postgres.GetItemsWithStatus(status))
 	})
 
 	// Get all items, regardless of status
-	router.GET("/items/all", func(c *gin.Context) {
+	router.GET("items/all", func(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, postgres.GetAllItems())
 	})
 
 	// Post new item, 201 on successful post, 400 on error
-	router.POST("/item/new", func(c *gin.Context) {
+	router.POST("item/new", func(c *gin.Context) {
 		var item item.Item
 		if err := c.BindJSON(&item); err != nil {
 			logging.LogError("Unable to create new item from body", err)
@@ -50,7 +68,7 @@ func main() {
 	})
 
 	// Put an existing item
-	router.PUT("/item/:id/update", func(c *gin.Context) {
+	router.PUT("item/:id/update", func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Params.ByName("id"))
 		if err != nil {
 			logging.LogError("Failed to convert ID to int", err)
@@ -68,7 +86,7 @@ func main() {
 	})
 
 	// Change item status from old to new
-	router.POST("/item/:id/switch", func(c *gin.Context) {
+	router.POST("item/:id/switch", func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Params.ByName("id"))
 		if err != nil {
 			logging.LogError("Failed to convert ID to int", err)
@@ -79,7 +97,7 @@ func main() {
 	})
 
 	// Delete an item
-	router.DELETE("/item/:id/delete", func(c *gin.Context) {
+	router.DELETE("item/:id/delete", func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Params.ByName("id"))
 		if err != nil {
 			logging.LogError("Failed to convert ID to int", err)
@@ -90,7 +108,7 @@ func main() {
 	})
 
 	// Get all categories
-	router.GET("/categories", func(c *gin.Context) {
+	router.GET("categories", func(c *gin.Context) {
 		categories := postgres.GetAllCategories()
 		c.IndentedJSON(http.StatusOK, categories)
 	})
