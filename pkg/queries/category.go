@@ -24,7 +24,7 @@ func (c *CategoryStruct) Create(ctx context.Context, client *ent.Client) error {
 	return nil
 }
 
-func (c *CategoryStruct) DeleteId(ctx context.Context, client *ent.Client) error {
+func (c *CategoryStruct) Delete(ctx context.Context, client *ent.Client) error {
 	err := client.Category.DeleteOneID(c.Id).Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to delete category: %w", err)

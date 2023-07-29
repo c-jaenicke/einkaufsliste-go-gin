@@ -13,7 +13,7 @@ type StoreStruct struct {
 	Name string `json:"name"`
 }
 
-func (s *StoreStruct) CreateStore(ctx context.Context, client *ent.Client) error {
+func (s *StoreStruct) Create(ctx context.Context, client *ent.Client) error {
 	st, err := client.Store.Create().SetName(s.Name).Save(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to create new store: %w", err)
@@ -23,7 +23,7 @@ func (s *StoreStruct) CreateStore(ctx context.Context, client *ent.Client) error
 	return nil
 }
 
-func (s *StoreStruct) DeleteStoreById(ctx context.Context, client *ent.Client) error {
+func (s *StoreStruct) Delete(ctx context.Context, client *ent.Client) error {
 	err := client.Store.DeleteOneID(s.Id).Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to delete store id: %w", err)

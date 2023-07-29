@@ -27,13 +27,13 @@ func runHttp() {
 	//
 	// ITEM MAPPINGS
 	//
-	router.GET("items/all", func(c *gin.Context) {
+	router.GET("item/all", func(c *gin.Context) {
 		items, _ := queries.GetAllItems(context.Background(), server.db)
 		c.IndentedJSON(http.StatusOK, items)
 	})
 	// TODO: merge both mappings together
 	// TODO: improve this mapping, right now you can only filter by one of the queries. This also requires creating a query method in the queries/item.go package to query by multiple attributes
-	router.GET("items/specific", func(c *gin.Context) {
+	router.GET("item/specific", func(c *gin.Context) {
 		storeId := c.Query("store")
 		categoryId := c.Query("category")
 		status := c.Query("status")
@@ -73,7 +73,7 @@ func runHttp() {
 		if err := c.BindJSON(&itemPost); err != nil {
 			logging.LogError("failed to create new item", err)
 		}
-		err := itemPost.CreateItem(context.Background(), server.db)
+		err := itemPost.Create(context.Background(), server.db)
 		if err != nil {
 			logging.LogError("", err)
 		}
@@ -87,7 +87,7 @@ func runHttp() {
 		}
 
 		it := queries.ItemStruct{Id: id}
-		err = it.DeleteItemById(context.Background(), server.db)
+		err = it.Delete(context.Background(), server.db)
 		if err != nil {
 			logging.LogError("", err)
 			c.Status(http.StatusInternalServerError)
@@ -108,7 +108,7 @@ func runHttp() {
 		}
 
 		itemPost.Id = id
-		err = itemPost.UpdateItemById(context.Background(), server.db)
+		err = itemPost.Update(context.Background(), server.db)
 		if err != nil {
 			logging.LogError("", err)
 			c.Status(http.StatusInternalServerError)
@@ -123,7 +123,7 @@ func runHttp() {
 			c.Status(http.StatusInternalServerError)
 		}
 
-		err = queries.UpdateItemStatus(context.Background(), server.db, id)
+		err = queries.SwitchItemStatus(context.Background(), server.db, id)
 		if err != nil {
 			logging.LogError("", err)
 			c.Status(http.StatusInternalServerError)
@@ -144,7 +144,7 @@ func runHttp() {
 		if err := c.BindJSON(&storePost); err != nil {
 			logging.LogError("failed to create new item", err)
 		}
-		err := storePost.CreateStore(context.Background(), server.db)
+		err := storePost.Create(context.Background(), server.db)
 		if err != nil {
 			logging.LogError("", err)
 		}
@@ -158,7 +158,7 @@ func runHttp() {
 		}
 
 		st := queries.StoreStruct{Id: id}
-		err = st.DeleteStoreById(context.Background(), server.db)
+		err = st.Delete(context.Background(), server.db)
 		if err != nil {
 			logging.LogError("", err)
 			c.Status(http.StatusInternalServerError)
@@ -200,7 +200,7 @@ func runHttp() {
 		}
 
 		cat := queries.CategoryStruct{Id: id}
-		err = cat.DeleteId(context.Background(), server.db)
+		err = cat.Delete(context.Background(), server.db)
 		if err != nil {
 			logging.LogError("", err)
 			c.Status(http.StatusInternalServerError)
@@ -232,12 +232,12 @@ func initDatabase() {
 	initCategories()
 }
 
-// iniStores create a "keiner" if it doesn't already exist
+// initStores create a "keiner" if it doesn't already exist
 func initStores() {
 	_, err := queries.GetStoreByName(context.Background(), server.db, "keiner")
 	if err != nil {
 		var store = queries.StoreStruct{Name: "keiner"}
-		errCreate := store.CreateStore(context.Background(), server.db)
+		errCreate := store.Create(context.Background(), server.db)
 		if errCreate != nil {
 			logging.LogPanic("failed to create initial category: ", errCreate)
 		}

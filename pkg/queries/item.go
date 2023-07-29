@@ -9,7 +9,6 @@ import (
 	"shopping-list/pkg/logging"
 )
 
-// TODO add more fields here, store
 type ItemStruct struct {
 	Id         int    `json:"id"`
 	Name       string `json:"name"`
@@ -20,7 +19,7 @@ type ItemStruct struct {
 	CategoryId int    `json:"category_id"`
 }
 
-func (itemStruct *ItemStruct) CreateItem(ctx context.Context, client *ent.Client) error {
+func (itemStruct *ItemStruct) Create(ctx context.Context, client *ent.Client) error {
 	it, err := client.Item.
 		Create().SetName(itemStruct.Name).SetNote(itemStruct.Note).SetAmount(itemStruct.Amount).SetStoreID(itemStruct.StoreId).SetCategoryID(itemStruct.CategoryId).Save(ctx)
 	if err != nil {
@@ -31,7 +30,7 @@ func (itemStruct *ItemStruct) CreateItem(ctx context.Context, client *ent.Client
 	return nil
 }
 
-func (itemStruct *ItemStruct) UpdateItemById(ctx context.Context, client *ent.Client) error {
+func (itemStruct *ItemStruct) Update(ctx context.Context, client *ent.Client) error {
 	it, err := client.Item.UpdateOneID(itemStruct.Id).SetName(itemStruct.Name).SetNote(itemStruct.Note).SetAmount(itemStruct.Amount).Save(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to update the item: %w", err)
@@ -41,7 +40,8 @@ func (itemStruct *ItemStruct) UpdateItemById(ctx context.Context, client *ent.Cl
 	return nil
 }
 
-func UpdateItemStatus(ctx context.Context, client *ent.Client, id int) error {
+// SwitchItemStatus switches status of the item with the given id, from "new" to "bought" and "bought" to "new"
+func SwitchItemStatus(ctx context.Context, client *ent.Client, id int) error {
 	it, err := GetItemById(context.Background(), client, id)
 	if err != nil {
 		return fmt.Errorf("item not found: %w", err)
@@ -62,7 +62,7 @@ func UpdateItemStatus(ctx context.Context, client *ent.Client, id int) error {
 	return nil
 }
 
-func (itemStruct *ItemStruct) DeleteItemById(ctx context.Context, client *ent.Client) error {
+func (itemStruct *ItemStruct) Delete(ctx context.Context, client *ent.Client) error {
 	err := client.Item.DeleteOneID(itemStruct.Id).Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to delete the item: %w", err)
