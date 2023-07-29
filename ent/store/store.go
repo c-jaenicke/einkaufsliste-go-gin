@@ -24,7 +24,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "item" package.
 	ItemsInverseTable = "items"
 	// ItemsColumn is the table column denoting the items relation/edge.
-	ItemsColumn = "store_items"
+	ItemsColumn = "store_id"
 )
 
 // Columns holds all SQL columns for store fields.

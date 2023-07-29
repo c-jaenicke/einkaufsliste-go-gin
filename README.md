@@ -1,6 +1,7 @@
 # einkaufsliste-go-gin
 
-A simple shopping list application that saves entries in a PostgreSQL database. It can serve those entries using a REST API or simple HTML pages and forms.
+A simple shopping list application that saves entries in a PostgreSQL database. It can serve those entries using a REST
+API or simple HTML pages and forms.
 
 ## Frontend
 
@@ -69,6 +70,109 @@ The site requires a PostgreSQL database to save entries.
 
 <sup><sub>Because im lazy i only did PostgreSQL.</sub></sup>
 
-## Icons
+## REST-API
 
-All used icons are taken from [https://feathericons.com/](https://feathericons.com/)
+### Category
+
+```text
+Get     category/all
+Post    category/new
+Delete  category/:id/delete
+Put     (category/:id/update)
+```
+
+#### Get
+
+```json
+[
+  {
+    "id": NUMBER,
+    "name": STRING,
+    "color": STRING(
+    "#000000-#ffffff)",
+    "edges": {}
+  }
+]
+```
+
+#### Post
+
+```json
+
+{
+  "id": NUMBER,
+  "name": STRING,
+  "color": STRING
+}
+```
+
+### Store
+
+```text
+Get     store/all
+Post    store/new
+Delete  store/:id/delete
+Put     (store/:id/update)
+```
+
+#### Get
+
+```json
+[
+  {
+    "id": NUMBER,
+    "name": STRING,
+    "edges": {}
+  }
+]
+```
+
+#### Post
+
+```json
+    {
+  "name": STRING
+}
+```
+
+### Item
+
+```text
+Get     item/all
+Get     item/all?store=store&category=category&=status
+Post    item/new
+Put     item/:id/update
+Delete  item/:id/delete
+Patch   item/:id/switch
+```
+
+#### Get
+
+```json
+[
+  {
+    "id": NUMBER,
+    "name": STRING,
+    "note": STRING,
+    "amount": NUMBER,
+    "status": STRING
+    "store_id": NUMBER,
+    "category_id": NUMBER,
+    "edges": {}
+  }
+]
+```
+
+Status can be `new` or `bought`.
+
+#### Post / Put
+
+```json
+    {
+  "name": STRING,
+  "note": STRING,
+  "amount": NUMBER,
+  "store_id": NUMBER,
+  "category_id": NUMBER
+}
+```

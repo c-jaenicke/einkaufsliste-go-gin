@@ -74,6 +74,16 @@ func Status(v string) predicate.Item {
 	return predicate.Item(sql.FieldEQ(FieldStatus, v))
 }
 
+// StoreID applies equality check predicate on the "store_id" field. It's identical to StoreIDEQ.
+func StoreID(v int) predicate.Item {
+	return predicate.Item(sql.FieldEQ(FieldStoreID, v))
+}
+
+// CategoryID applies equality check predicate on the "category_id" field. It's identical to CategoryIDEQ.
+func CategoryID(v int) predicate.Item {
+	return predicate.Item(sql.FieldEQ(FieldCategoryID, v))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.Item {
 	return predicate.Item(sql.FieldEQ(FieldName, v))
@@ -307,6 +317,66 @@ func StatusEqualFold(v string) predicate.Item {
 // StatusContainsFold applies the ContainsFold predicate on the "status" field.
 func StatusContainsFold(v string) predicate.Item {
 	return predicate.Item(sql.FieldContainsFold(FieldStatus, v))
+}
+
+// StoreIDEQ applies the EQ predicate on the "store_id" field.
+func StoreIDEQ(v int) predicate.Item {
+	return predicate.Item(sql.FieldEQ(FieldStoreID, v))
+}
+
+// StoreIDNEQ applies the NEQ predicate on the "store_id" field.
+func StoreIDNEQ(v int) predicate.Item {
+	return predicate.Item(sql.FieldNEQ(FieldStoreID, v))
+}
+
+// StoreIDIn applies the In predicate on the "store_id" field.
+func StoreIDIn(vs ...int) predicate.Item {
+	return predicate.Item(sql.FieldIn(FieldStoreID, vs...))
+}
+
+// StoreIDNotIn applies the NotIn predicate on the "store_id" field.
+func StoreIDNotIn(vs ...int) predicate.Item {
+	return predicate.Item(sql.FieldNotIn(FieldStoreID, vs...))
+}
+
+// StoreIDIsNil applies the IsNil predicate on the "store_id" field.
+func StoreIDIsNil() predicate.Item {
+	return predicate.Item(sql.FieldIsNull(FieldStoreID))
+}
+
+// StoreIDNotNil applies the NotNil predicate on the "store_id" field.
+func StoreIDNotNil() predicate.Item {
+	return predicate.Item(sql.FieldNotNull(FieldStoreID))
+}
+
+// CategoryIDEQ applies the EQ predicate on the "category_id" field.
+func CategoryIDEQ(v int) predicate.Item {
+	return predicate.Item(sql.FieldEQ(FieldCategoryID, v))
+}
+
+// CategoryIDNEQ applies the NEQ predicate on the "category_id" field.
+func CategoryIDNEQ(v int) predicate.Item {
+	return predicate.Item(sql.FieldNEQ(FieldCategoryID, v))
+}
+
+// CategoryIDIn applies the In predicate on the "category_id" field.
+func CategoryIDIn(vs ...int) predicate.Item {
+	return predicate.Item(sql.FieldIn(FieldCategoryID, vs...))
+}
+
+// CategoryIDNotIn applies the NotIn predicate on the "category_id" field.
+func CategoryIDNotIn(vs ...int) predicate.Item {
+	return predicate.Item(sql.FieldNotIn(FieldCategoryID, vs...))
+}
+
+// CategoryIDIsNil applies the IsNil predicate on the "category_id" field.
+func CategoryIDIsNil() predicate.Item {
+	return predicate.Item(sql.FieldIsNull(FieldCategoryID))
+}
+
+// CategoryIDNotNil applies the NotNil predicate on the "category_id" field.
+func CategoryIDNotNil() predicate.Item {
+	return predicate.Item(sql.FieldNotNull(FieldCategoryID))
 }
 
 // HasStore applies the HasEdge predicate on the "store" edge.

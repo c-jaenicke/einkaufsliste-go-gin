@@ -786,9 +786,102 @@ func (m *ItemMutation) ResetStatus() {
 	m.status = nil
 }
 
-// SetStoreID sets the "store" edge to the Store entity by id.
-func (m *ItemMutation) SetStoreID(id int) {
-	m.store = &id
+// SetStoreID sets the "store_id" field.
+func (m *ItemMutation) SetStoreID(i int) {
+	m.store = &i
+}
+
+// StoreID returns the value of the "store_id" field in the mutation.
+func (m *ItemMutation) StoreID() (r int, exists bool) {
+	v := m.store
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStoreID returns the old "store_id" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldStoreID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStoreID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStoreID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStoreID: %w", err)
+	}
+	return oldValue.StoreID, nil
+}
+
+// ClearStoreID clears the value of the "store_id" field.
+func (m *ItemMutation) ClearStoreID() {
+	m.store = nil
+	m.clearedFields[item.FieldStoreID] = struct{}{}
+}
+
+// StoreIDCleared returns if the "store_id" field was cleared in this mutation.
+func (m *ItemMutation) StoreIDCleared() bool {
+	_, ok := m.clearedFields[item.FieldStoreID]
+	return ok
+}
+
+// ResetStoreID resets all changes to the "store_id" field.
+func (m *ItemMutation) ResetStoreID() {
+	m.store = nil
+	delete(m.clearedFields, item.FieldStoreID)
+}
+
+// SetCategoryID sets the "category_id" field.
+func (m *ItemMutation) SetCategoryID(i int) {
+	m.category = &i
+}
+
+// CategoryID returns the value of the "category_id" field in the mutation.
+func (m *ItemMutation) CategoryID() (r int, exists bool) {
+	v := m.category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCategoryID returns the old "category_id" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldCategoryID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCategoryID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCategoryID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCategoryID: %w", err)
+	}
+	return oldValue.CategoryID, nil
+}
+
+// ClearCategoryID clears the value of the "category_id" field.
+func (m *ItemMutation) ClearCategoryID() {
+	m.category = nil
+	m.clearedFields[item.FieldCategoryID] = struct{}{}
+}
+
+// CategoryIDCleared returns if the "category_id" field was cleared in this mutation.
+func (m *ItemMutation) CategoryIDCleared() bool {
+	_, ok := m.clearedFields[item.FieldCategoryID]
+	return ok
+}
+
+// ResetCategoryID resets all changes to the "category_id" field.
+func (m *ItemMutation) ResetCategoryID() {
+	m.category = nil
+	delete(m.clearedFields, item.FieldCategoryID)
 }
 
 // ClearStore clears the "store" edge to the Store entity.
@@ -798,15 +891,7 @@ func (m *ItemMutation) ClearStore() {
 
 // StoreCleared reports if the "store" edge to the Store entity was cleared.
 func (m *ItemMutation) StoreCleared() bool {
-	return m.clearedstore
-}
-
-// StoreID returns the "store" edge ID in the mutation.
-func (m *ItemMutation) StoreID() (id int, exists bool) {
-	if m.store != nil {
-		return *m.store, true
-	}
-	return
+	return m.StoreIDCleared() || m.clearedstore
 }
 
 // StoreIDs returns the "store" edge IDs in the mutation.
@@ -825,11 +910,6 @@ func (m *ItemMutation) ResetStore() {
 	m.clearedstore = false
 }
 
-// SetCategoryID sets the "category" edge to the Category entity by id.
-func (m *ItemMutation) SetCategoryID(id int) {
-	m.category = &id
-}
-
 // ClearCategory clears the "category" edge to the Category entity.
 func (m *ItemMutation) ClearCategory() {
 	m.clearedcategory = true
@@ -837,15 +917,7 @@ func (m *ItemMutation) ClearCategory() {
 
 // CategoryCleared reports if the "category" edge to the Category entity was cleared.
 func (m *ItemMutation) CategoryCleared() bool {
-	return m.clearedcategory
-}
-
-// CategoryID returns the "category" edge ID in the mutation.
-func (m *ItemMutation) CategoryID() (id int, exists bool) {
-	if m.category != nil {
-		return *m.category, true
-	}
-	return
+	return m.CategoryIDCleared() || m.clearedcategory
 }
 
 // CategoryIDs returns the "category" edge IDs in the mutation.
@@ -898,7 +970,7 @@ func (m *ItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ItemMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, item.FieldName)
 	}
@@ -910,6 +982,12 @@ func (m *ItemMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, item.FieldStatus)
+	}
+	if m.store != nil {
+		fields = append(fields, item.FieldStoreID)
+	}
+	if m.category != nil {
+		fields = append(fields, item.FieldCategoryID)
 	}
 	return fields
 }
@@ -927,6 +1005,10 @@ func (m *ItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Amount()
 	case item.FieldStatus:
 		return m.Status()
+	case item.FieldStoreID:
+		return m.StoreID()
+	case item.FieldCategoryID:
+		return m.CategoryID()
 	}
 	return nil, false
 }
@@ -944,6 +1026,10 @@ func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldAmount(ctx)
 	case item.FieldStatus:
 		return m.OldStatus(ctx)
+	case item.FieldStoreID:
+		return m.OldStoreID(ctx)
+	case item.FieldCategoryID:
+		return m.OldCategoryID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Item field %s", name)
 }
@@ -980,6 +1066,20 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case item.FieldStoreID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStoreID(v)
+		return nil
+	case item.FieldCategoryID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCategoryID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
@@ -1025,7 +1125,14 @@ func (m *ItemMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *ItemMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(item.FieldStoreID) {
+		fields = append(fields, item.FieldStoreID)
+	}
+	if m.FieldCleared(item.FieldCategoryID) {
+		fields = append(fields, item.FieldCategoryID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1038,6 +1145,14 @@ func (m *ItemMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *ItemMutation) ClearField(name string) error {
+	switch name {
+	case item.FieldStoreID:
+		m.ClearStoreID()
+		return nil
+	case item.FieldCategoryID:
+		m.ClearCategoryID()
+		return nil
+	}
 	return fmt.Errorf("unknown Item nullable field %s", name)
 }
 
@@ -1056,6 +1171,12 @@ func (m *ItemMutation) ResetField(name string) error {
 		return nil
 	case item.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case item.FieldStoreID:
+		m.ResetStoreID()
+		return nil
+	case item.FieldCategoryID:
+		m.ResetCategoryID()
 		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)

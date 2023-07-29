@@ -412,7 +412,9 @@ func (cq *CategoryQuery) loadItems(ctx context.Context, query *ItemQuery, nodes 
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(item.FieldCategoryID)
+	}
 	query.Where(predicate.Item(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(category.ItemsColumn), fks...))
 	}))
@@ -421,13 +423,10 @@ func (cq *CategoryQuery) loadItems(ctx context.Context, query *ItemQuery, nodes 
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.category_items
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "category_items" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.CategoryID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "category_items" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "category_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

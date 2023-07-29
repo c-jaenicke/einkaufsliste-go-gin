@@ -27,8 +27,8 @@ var (
 		{Name: "note", Type: field.TypeString},
 		{Name: "amount", Type: field.TypeInt},
 		{Name: "status", Type: field.TypeString, Default: "new"},
-		{Name: "category_items", Type: field.TypeInt, Nullable: true},
-		{Name: "store_items", Type: field.TypeInt, Nullable: true},
+		{Name: "category_id", Type: field.TypeInt, Nullable: true},
+		{Name: "store_id", Type: field.TypeInt, Nullable: true},
 	}
 	// ItemsTable holds the schema information for the "items" table.
 	ItemsTable = &schema.Table{

@@ -26,12 +26,14 @@ type Item struct {
 	Amount int `json:"amount,omitempty"`
 	// Status holds the value of the "status" field.
 	Status string `json:"status,omitempty"`
+	// StoreID holds the value of the "store_id" field.
+	StoreID int `json:"store_id,omitempty"`
+	// CategoryID holds the value of the "category_id" field.
+	CategoryID int `json:"category_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ItemQuery when eager-loading is set.
-	Edges          ItemEdges `json:"edges"`
-	category_items *int
-	store_items    *int
-	selectValues   sql.SelectValues
+	Edges        ItemEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // ItemEdges holds the relations/edges for other nodes in the graph.
@@ -76,14 +78,10 @@ func (*Item) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case item.FieldID, item.FieldAmount:
+		case item.FieldID, item.FieldAmount, item.FieldStoreID, item.FieldCategoryID:
 			values[i] = new(sql.NullInt64)
 		case item.FieldName, item.FieldNote, item.FieldStatus:
 			values[i] = new(sql.NullString)
-		case item.ForeignKeys[0]: // category_items
-			values[i] = new(sql.NullInt64)
-		case item.ForeignKeys[1]: // store_items
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -129,19 +127,17 @@ func (i *Item) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				i.Status = value.String
 			}
-		case item.ForeignKeys[0]:
+		case item.FieldStoreID:
 			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field category_items", value)
+				return fmt.Errorf("unexpected type %T for field store_id", values[j])
 			} else if value.Valid {
-				i.category_items = new(int)
-				*i.category_items = int(value.Int64)
+				i.StoreID = int(value.Int64)
 			}
-		case item.ForeignKeys[1]:
+		case item.FieldCategoryID:
 			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field store_items", value)
+				return fmt.Errorf("unexpected type %T for field category_id", values[j])
 			} else if value.Valid {
-				i.store_items = new(int)
-				*i.store_items = int(value.Int64)
+				i.CategoryID = int(value.Int64)
 			}
 		default:
 			i.selectValues.Set(columns[j], values[j])
@@ -200,6 +196,12 @@ func (i *Item) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(i.Status)
+	builder.WriteString(", ")
+	builder.WriteString("store_id=")
+	builder.WriteString(fmt.Sprintf("%v", i.StoreID))
+	builder.WriteString(", ")
+	builder.WriteString("category_id=")
+	builder.WriteString(fmt.Sprintf("%v", i.CategoryID))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -20,6 +20,10 @@ const (
 	FieldAmount = "amount"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldStoreID holds the string denoting the store_id field in the database.
+	FieldStoreID = "store_id"
+	// FieldCategoryID holds the string denoting the category_id field in the database.
+	FieldCategoryID = "category_id"
 	// EdgeStore holds the string denoting the store edge name in mutations.
 	EdgeStore = "store"
 	// EdgeCategory holds the string denoting the category edge name in mutations.
@@ -32,14 +36,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "store" package.
 	StoreInverseTable = "stores"
 	// StoreColumn is the table column denoting the store relation/edge.
-	StoreColumn = "store_items"
+	StoreColumn = "store_id"
 	// CategoryTable is the table that holds the category relation/edge.
 	CategoryTable = "items"
 	// CategoryInverseTable is the table name for the Category entity.
 	// It exists in this package in order to avoid circular dependency with the "category" package.
 	CategoryInverseTable = "categories"
 	// CategoryColumn is the table column denoting the category relation/edge.
-	CategoryColumn = "category_items"
+	CategoryColumn = "category_id"
 )
 
 // Columns holds all SQL columns for item fields.
@@ -49,24 +53,14 @@ var Columns = []string{
 	FieldNote,
 	FieldAmount,
 	FieldStatus,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "items"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"category_items",
-	"store_items",
+	FieldStoreID,
+	FieldCategoryID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -110,6 +104,16 @@ func ByAmount(opts ...sql.OrderTermOption) OrderOption {
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByStoreID orders the results by the store_id field.
+func ByStoreID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStoreID, opts...).ToFunc()
+}
+
+// ByCategoryID orders the results by the category_id field.
+func ByCategoryID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCategoryID, opts...).ToFunc()
 }
 
 // ByStoreField orders the results by store field.

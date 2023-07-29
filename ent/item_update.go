@@ -68,37 +68,49 @@ func (iu *ItemUpdate) SetNillableStatus(s *string) *ItemUpdate {
 	return iu
 }
 
-// SetStoreID sets the "store" edge to the Store entity by ID.
-func (iu *ItemUpdate) SetStoreID(id int) *ItemUpdate {
-	iu.mutation.SetStoreID(id)
+// SetStoreID sets the "store_id" field.
+func (iu *ItemUpdate) SetStoreID(i int) *ItemUpdate {
+	iu.mutation.SetStoreID(i)
 	return iu
 }
 
-// SetNillableStoreID sets the "store" edge to the Store entity by ID if the given value is not nil.
-func (iu *ItemUpdate) SetNillableStoreID(id *int) *ItemUpdate {
-	if id != nil {
-		iu = iu.SetStoreID(*id)
+// SetNillableStoreID sets the "store_id" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableStoreID(i *int) *ItemUpdate {
+	if i != nil {
+		iu.SetStoreID(*i)
 	}
+	return iu
+}
+
+// ClearStoreID clears the value of the "store_id" field.
+func (iu *ItemUpdate) ClearStoreID() *ItemUpdate {
+	iu.mutation.ClearStoreID()
+	return iu
+}
+
+// SetCategoryID sets the "category_id" field.
+func (iu *ItemUpdate) SetCategoryID(i int) *ItemUpdate {
+	iu.mutation.SetCategoryID(i)
+	return iu
+}
+
+// SetNillableCategoryID sets the "category_id" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableCategoryID(i *int) *ItemUpdate {
+	if i != nil {
+		iu.SetCategoryID(*i)
+	}
+	return iu
+}
+
+// ClearCategoryID clears the value of the "category_id" field.
+func (iu *ItemUpdate) ClearCategoryID() *ItemUpdate {
+	iu.mutation.ClearCategoryID()
 	return iu
 }
 
 // SetStore sets the "store" edge to the Store entity.
 func (iu *ItemUpdate) SetStore(s *Store) *ItemUpdate {
 	return iu.SetStoreID(s.ID)
-}
-
-// SetCategoryID sets the "category" edge to the Category entity by ID.
-func (iu *ItemUpdate) SetCategoryID(id int) *ItemUpdate {
-	iu.mutation.SetCategoryID(id)
-	return iu
-}
-
-// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
-func (iu *ItemUpdate) SetNillableCategoryID(id *int) *ItemUpdate {
-	if id != nil {
-		iu = iu.SetCategoryID(*id)
-	}
-	return iu
 }
 
 // SetCategory sets the "category" edge to the Category entity.
@@ -314,37 +326,49 @@ func (iuo *ItemUpdateOne) SetNillableStatus(s *string) *ItemUpdateOne {
 	return iuo
 }
 
-// SetStoreID sets the "store" edge to the Store entity by ID.
-func (iuo *ItemUpdateOne) SetStoreID(id int) *ItemUpdateOne {
-	iuo.mutation.SetStoreID(id)
+// SetStoreID sets the "store_id" field.
+func (iuo *ItemUpdateOne) SetStoreID(i int) *ItemUpdateOne {
+	iuo.mutation.SetStoreID(i)
 	return iuo
 }
 
-// SetNillableStoreID sets the "store" edge to the Store entity by ID if the given value is not nil.
-func (iuo *ItemUpdateOne) SetNillableStoreID(id *int) *ItemUpdateOne {
-	if id != nil {
-		iuo = iuo.SetStoreID(*id)
+// SetNillableStoreID sets the "store_id" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableStoreID(i *int) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetStoreID(*i)
 	}
+	return iuo
+}
+
+// ClearStoreID clears the value of the "store_id" field.
+func (iuo *ItemUpdateOne) ClearStoreID() *ItemUpdateOne {
+	iuo.mutation.ClearStoreID()
+	return iuo
+}
+
+// SetCategoryID sets the "category_id" field.
+func (iuo *ItemUpdateOne) SetCategoryID(i int) *ItemUpdateOne {
+	iuo.mutation.SetCategoryID(i)
+	return iuo
+}
+
+// SetNillableCategoryID sets the "category_id" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableCategoryID(i *int) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetCategoryID(*i)
+	}
+	return iuo
+}
+
+// ClearCategoryID clears the value of the "category_id" field.
+func (iuo *ItemUpdateOne) ClearCategoryID() *ItemUpdateOne {
+	iuo.mutation.ClearCategoryID()
 	return iuo
 }
 
 // SetStore sets the "store" edge to the Store entity.
 func (iuo *ItemUpdateOne) SetStore(s *Store) *ItemUpdateOne {
 	return iuo.SetStoreID(s.ID)
-}
-
-// SetCategoryID sets the "category" edge to the Category entity by ID.
-func (iuo *ItemUpdateOne) SetCategoryID(id int) *ItemUpdateOne {
-	iuo.mutation.SetCategoryID(id)
-	return iuo
-}
-
-// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
-func (iuo *ItemUpdateOne) SetNillableCategoryID(id *int) *ItemUpdateOne {
-	if id != nil {
-		iuo = iuo.SetCategoryID(*id)
-	}
-	return iuo
 }
 
 // SetCategory sets the "category" edge to the Category entity.

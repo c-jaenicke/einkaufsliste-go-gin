@@ -18,13 +18,15 @@ func (Item) Fields() []ent.Field {
 		field.String("note"),
 		field.Int("amount").Positive(),
 		field.String("status").NotEmpty().Default("new"),
+		field.Int("store_id").Optional(),
+		field.Int("category_id").Optional(),
 	}
 }
 
 // Edges of the Item.
 func (Item) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("store", Store.Type).Ref("items").Unique(),
-		edge.From("category", Category.Type).Ref("items").Unique(),
+		edge.From("store", Store.Type).Ref("items").Field("store_id").Unique(),
+		edge.From("category", Category.Type).Ref("items").Field("category_id").Unique(),
 	}
 }

@@ -25,7 +25,6 @@ type ItemQuery struct {
 	predicates   []predicate.Item
 	withStore    *StoreQuery
 	withCategory *CategoryQuery
-	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -405,19 +404,12 @@ func (iq *ItemQuery) prepareQuery(ctx context.Context) error {
 func (iq *ItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Item, error) {
 	var (
 		nodes       = []*Item{}
-		withFKs     = iq.withFKs
 		_spec       = iq.querySpec()
 		loadedTypes = [2]bool{
 			iq.withStore != nil,
 			iq.withCategory != nil,
 		}
 	)
-	if iq.withStore != nil || iq.withCategory != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, item.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Item).scanValues(nil, columns)
 	}
@@ -455,10 +447,7 @@ func (iq *ItemQuery) loadStore(ctx context.Context, query *StoreQuery, nodes []*
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Item)
 	for i := range nodes {
-		if nodes[i].store_items == nil {
-			continue
-		}
-		fk := *nodes[i].store_items
+		fk := nodes[i].StoreID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -475,7 +464,7 @@ func (iq *ItemQuery) loadStore(ctx context.Context, query *StoreQuery, nodes []*
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "store_items" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "store_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -487,10 +476,7 @@ func (iq *ItemQuery) loadCategory(ctx context.Context, query *CategoryQuery, nod
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Item)
 	for i := range nodes {
-		if nodes[i].category_items == nil {
-			continue
-		}
-		fk := *nodes[i].category_items
+		fk := nodes[i].CategoryID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -507,7 +493,7 @@ func (iq *ItemQuery) loadCategory(ctx context.Context, query *CategoryQuery, nod
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "category_items" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "category_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -540,6 +526,12 @@ func (iq *ItemQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != item.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if iq.withStore != nil {
+			_spec.Node.AddColumnOnce(item.FieldStoreID)
+		}
+		if iq.withCategory != nil {
+			_spec.Node.AddColumnOnce(item.FieldCategoryID)
 		}
 	}
 	if ps := iq.predicates; len(ps) > 0 {

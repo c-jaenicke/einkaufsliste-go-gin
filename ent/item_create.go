@@ -53,16 +53,30 @@ func (ic *ItemCreate) SetNillableStatus(s *string) *ItemCreate {
 	return ic
 }
 
-// SetStoreID sets the "store" edge to the Store entity by ID.
-func (ic *ItemCreate) SetStoreID(id int) *ItemCreate {
-	ic.mutation.SetStoreID(id)
+// SetStoreID sets the "store_id" field.
+func (ic *ItemCreate) SetStoreID(i int) *ItemCreate {
+	ic.mutation.SetStoreID(i)
 	return ic
 }
 
-// SetNillableStoreID sets the "store" edge to the Store entity by ID if the given value is not nil.
-func (ic *ItemCreate) SetNillableStoreID(id *int) *ItemCreate {
-	if id != nil {
-		ic = ic.SetStoreID(*id)
+// SetNillableStoreID sets the "store_id" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableStoreID(i *int) *ItemCreate {
+	if i != nil {
+		ic.SetStoreID(*i)
+	}
+	return ic
+}
+
+// SetCategoryID sets the "category_id" field.
+func (ic *ItemCreate) SetCategoryID(i int) *ItemCreate {
+	ic.mutation.SetCategoryID(i)
+	return ic
+}
+
+// SetNillableCategoryID sets the "category_id" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableCategoryID(i *int) *ItemCreate {
+	if i != nil {
+		ic.SetCategoryID(*i)
 	}
 	return ic
 }
@@ -70,20 +84,6 @@ func (ic *ItemCreate) SetNillableStoreID(id *int) *ItemCreate {
 // SetStore sets the "store" edge to the Store entity.
 func (ic *ItemCreate) SetStore(s *Store) *ItemCreate {
 	return ic.SetStoreID(s.ID)
-}
-
-// SetCategoryID sets the "category" edge to the Category entity by ID.
-func (ic *ItemCreate) SetCategoryID(id int) *ItemCreate {
-	ic.mutation.SetCategoryID(id)
-	return ic
-}
-
-// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
-func (ic *ItemCreate) SetNillableCategoryID(id *int) *ItemCreate {
-	if id != nil {
-		ic = ic.SetCategoryID(*id)
-	}
-	return ic
 }
 
 // SetCategory sets the "category" edge to the Category entity.
@@ -217,7 +217,7 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.store_items = &nodes[0]
+		_node.StoreID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ic.mutation.CategoryIDs(); len(nodes) > 0 {
@@ -234,7 +234,7 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.category_items = &nodes[0]
+		_node.CategoryID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
