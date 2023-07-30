@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"net/http"
+	"os"
 	"shopping-list/ent"
 	"shopping-list/pkg/logging"
 	"shopping-list/pkg/queries"
@@ -233,7 +234,7 @@ func runHttp() {
 
 // initDatabase initialize database connection, create schema and entries
 func initDatabase() {
-	client, err := ent.Open("postgres", "host=172.22.0.2 port=5432 user=user dbname=db password=pass sslmode=disable")
+	client, err := ent.Open("postgres", "host="+os.Args[1]+" port=5432 user=user dbname=db password=pass sslmode=disable")
 	if err != nil {
 		logging.LogPanic("failed to connect to db: %v", err)
 	}
