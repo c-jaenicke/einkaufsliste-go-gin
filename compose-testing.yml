@@ -1,0 +1,23 @@
+# DOCKER COMPOSE FOR TESTING PURPOSES
+# DEPLOYS SINGLE POSTGRESQL DATABASE FOR TESTING
+version: '3.8'
+
+services:
+  db:
+    container_name: ek-postgres-test
+    image: postgres:latest
+    restart: unless-stopped
+    hostname: ek-postgres-test
+    environment:
+      - POSTGRES_PASSWORD=asdasd
+      - POSTGRES_USER=test
+      - POSTGRES_DB=shopping
+    volumes:
+      - ek-postgres-test-volume:/var/lib/postgresql/data
+
+volumes:
+  ek-postgres-test-volume:
+
+networks:
+  default:
+    driver: bridge

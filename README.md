@@ -1,19 +1,20 @@
 # einkaufsliste-go-gin
 
-A simple shopping list application that saves entries in a PostgreSQL database. It can serve those entries using a REST API or simple HTML pages and forms.
+
+A simple shopping list application written in Go, using a PostgreSQL database to store all entries.
+Serving a REST-API for the frontend.
+
 
 ## Frontend
 
 A basic vue.js frontend exists [c-jaenicke/einkaufsliste-vue](https://github.com/c-jaenicke/einkaufsliste-vue).
 
-Possibly more to come.
-
 ## Authentication
 
 **There is no built-in authentication!**
 
-You should put the site behind [Authelia (authelia.com)](https://www.authelia.com/) or another authentication service to
-protect it.
+This doesn't have any authentication included! If you want yours to be secure, put something like Authelia or Authentik
+in front ot it.
 
 Everyone that has access to the site can change the entries!
 
@@ -41,7 +42,7 @@ services:
       - POSTGRES_URL="postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@172.22.0.2:5432/<POSTGRES_DB>"
 
   # postgresql database
-  # optional, in case you dont have a postgresql database already runnings
+  # optional, in case you dont have a postgresql database already running
   db:
     container_name: postgres-test
     image: postgres:latest
@@ -59,16 +60,107 @@ volumes:
   postgres-test-volume:
 ```
 
-## Language / Translation
+## REST-API
 
-Everything but the code is in german, fork it and translate it if you want to.
+### Category
 
-## Database
+```text
+Get     category/all
+Post    category/new
+Delete  category/:id/delete
+Put     (category/:id/update)
+```
 
-The site requires a PostgreSQL database to save entries.
+#### Get
 
-<sup><sub>Because im lazy i only did PostgreSQL.</sub></sup>
+```json
+[
+  {
+    "id": "NUMBER",
+    "name": "STRING",
+    "color": "STRING(#000000-#ffffff)",
+    "edges": {}
+  }
+]
+```
 
-## Icons
+#### Post
 
-All used icons are taken from [https://feathericons.com/](https://feathericons.com/)
+```json
+
+{
+  "id": "NUMBER",
+  "name": "STRING",
+  "color": "STRING"
+}
+```
+
+### Store
+
+```text
+Get     store/all
+Post    store/new
+Delete  store/:id/delete
+Put     (store/:id/update)
+```
+#### Get
+
+```json
+[
+  {
+    "id": "NUMBER",
+    "name": "STRING",
+    "edges": {}
+  }
+]
+```
+
+#### Post
+
+```json
+    {
+  "name": "STRING"
+}
+```
+
+### Item
+
+```text
+Get     item/all
+Get     item/all?store=store&category=category&=status
+Post    item/new
+Put     item/:id/update
+Delete  item/:id/delete
+Patch   item/:id/switch
+```
+
+#### Get
+
+```json
+[
+  {
+    "id": "NUMBER",
+    "name": "STRING",
+    "note": "STRING",
+    "amount": "NUMBER",
+    "status": "STRING[new|bought]",
+    "store_id": "NUMBER",
+    "category_id": "NUMBER",
+    "edges": {}
+  }
+]
+```
+
+Status can be `new` or `bought`.
+
+#### Post / Put
+
+```json
+    {
+  "name": "STRING",
+  "note": "STRING",
+  "amount": "NUMBER",
+  "store_id": "NUMBER",
+  "category_id": "NUMBER"
+}
+```
