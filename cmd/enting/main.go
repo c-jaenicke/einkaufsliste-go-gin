@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"net/http"
 	"os"
@@ -234,7 +235,19 @@ func runHttp() {
 
 // initDatabase initialize database connection, create schema and entries
 func initDatabase() {
-	client, err := ent.Open("postgres", "host="+os.Args[1]+" port=5432 user=user dbname=db password=pass sslmode=disable")
+	//dataSourceString := "host=einkaufsliste-db port=5432 user=user dbname=db password=pass sslmode=disable"
+
+	var dataSourceString string
+	var err error
+	dataSourceString, err = getDSSFromEnv()
+	if err != nil {
+		logging.LogError("failed to get dataSourceString from .env fiel: ", err)
+		// load dss from docker compose file
+		dataSourceString = os.Getenv("DSS")
+	}
+
+	client, err := ent.Open("postgres", dataSourceString)
+	logging.LogInfo("attempting connection to db under: " + dataSourceString)
 	if err != nil {
 		logging.LogPanic("failed to connect to db: %v", err)
 	}
@@ -273,6 +286,15 @@ func initCategories() {
 			logging.LogPanic("failed to create initial category: ", errCreate)
 		}
 	}
+}
+
+func getDSSFromEnv() (string, error) {
+	err := godotenv.Load(".env")
+	if err != nil {
+		return "", err
+	}
+
+	return os.Getenv("DSS"), nil
 }
 
 func main() {

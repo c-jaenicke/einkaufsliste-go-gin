@@ -9,18 +9,20 @@ COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 
-COPY cmd/rest/ ./
+COPY cmd/enting/ ./
 COPY pkg/ ./pkg/
-RUN CGO_ENABLED=0 GOOS=linux go build -o /rest
+COPY ent/ ./ent/
+RUN CGO_ENABLED=0 GOOS=linux go build -o /enting
 
 ## DEPLOY
 FROM alpine:latest
 
 WORKDIR /app
 
-COPY --from=build-stage /rest /app/rest
+COPY --from=build-stage /enting /app/enting
+COPY .env ./
 
 ENV GIN_MODE release
 EXPOSE 8080
 
-CMD [ "/app/rest" ]
+CMD [ "/app/enting" ]

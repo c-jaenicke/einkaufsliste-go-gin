@@ -1,13 +1,14 @@
 # einkaufsliste-go-gin
 
-
 A simple shopping list application written in Go, using a PostgreSQL database to store all entries.
 Serving a REST-API for the frontend.
-
 
 ## Frontend
 
 A basic vue.js frontend exists [c-jaenicke/einkaufsliste-vue](https://github.com/c-jaenicke/einkaufsliste-vue).
+
+A better and more modern looking frontend written using
+svelte [c-jaenicke/einkaufsliste-svelte](https://github.com/c-jaenicke/einkaufsliste-svelte).
 
 ## Authentication
 
@@ -18,47 +19,79 @@ in front ot it.
 
 Everyone that has access to the site can change the entries!
 
+---
+
 ## Docker
 
-You can host the webapp using the included `docker-compose`. Be aware, you need to change some lines to your setup!
-
-Fields marked with `<TEXT>` need to be adjusted!
-
 ```yaml
-version: "3.8"
+version: "3.9"
 
 services:
-  app:
-    container_name: shopping-list
-    image: shopping:latest
+  db:
+    container_name: einkaufsliste-db
+    hostname: einkaufsliste-db
+    image: postgres:15
     restart: unless-stopped
-    # expose ports of container, but don't bind to host port, useful for reverse proxy
-    #expose:
-    #  - 8080
-    # bind container port to host port, format: HOST:CONTAINER
+    environment:
+      # change values here!
+      - POSTGRES_PASSWORD=<SET PASSWORD HERE>
+      - POSTGRES_USER=<SET USERNAME HERE>
+      - POSTGRES_DB=<SET DB NAME HERE>
+    volumes:
+      - einkaufsliste-db-volume:/var/lib/postgresql/data
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d <SET DB NAME HERE> -U <SET USERNAME HERE>" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    container_name: einkaufsliste-frontend
+    hostname: einkaufsliste-frontend
+    image: einkaufsliste-svelte:latest
+    restart: unless-stopped
+    environment:
+      - "ORIGIN=<SET DOMAIN HERE, LOCALHOST:PORT WHEN TESTING>"
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+
+  backend:
+    container_name: einkaufsliste-api
+    hostname: einkaufsliste-api
+    image: einkaufsliste-rest:latest
+    restart: unless-stopped
     ports:
       - 8080:8080
     environment:
-      - POSTGRES_URL="postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@172.22.0.2:5432/<POSTGRES_DB>"
+      # make sure to change values here! need to be the same as above!
+      - DSS=host=einkaufsliste-db port=5432 user=<SET USERNAME HERE> dbname=<SET DB NAME HERE> password=<SET PASSWORD HERE> sslmode=disable
+    expose:
+      - 8080
+    depends_on:
+      db:
+        condition: service_healthy
 
-  # postgresql database
-  # optional, in case you dont have a postgresql database already running
-  db:
-    container_name: postgres-test
-    image: postgres:latest
-    restart: unless-stopped
-    hostname: postgres-test
-    environment:
-      - POSTGRES_PASSWORD=<SET PASSWORD HERE>
-      - POSTGRES_USER=<SET USER HERE>
-      - POSTGRES_DB=<SET DATABASE NAME HERE>
-    volumes:
-      - postgres-test-volume:/var/lib/postgresql/data
-
-# persistent volume for saving database
 volumes:
-  postgres-test-volume:
+  einkaufsliste-db-volume:
+
+networks:
+  default:
+    driver: bridge
 ```
+
+### .env
+
+Following string has to be set, either in the `.env` file when building the docker image, or in the docker-compose file.
+
+```env
+DSS=host=<db container name> port=5432 user=<username> dbname=<db name> password=<password> sslmode=disable
+```
+
+---
 
 ## REST-API
 
@@ -103,6 +136,7 @@ Post    store/new
 Delete  store/:id/delete
 Put     (store/:id/update)
 ```
+
 #### Get
 
 ```json
