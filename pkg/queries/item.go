@@ -21,7 +21,13 @@ type ItemStruct struct {
 
 func (itemStruct *ItemStruct) Create(ctx context.Context, client *ent.Client) error {
 	it, err := client.Item.
-		Create().SetName(itemStruct.Name).SetNote(itemStruct.Note).SetAmount(itemStruct.Amount).SetStoreID(itemStruct.StoreId).SetCategoryID(itemStruct.CategoryId).Save(ctx)
+		Create().
+		SetName(itemStruct.Name).
+		SetNote(itemStruct.Note).
+		SetAmount(itemStruct.Amount).
+		SetStoreID(itemStruct.StoreId).
+		SetCategoryID(itemStruct.CategoryId).
+		Save(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to create a new item: %w", err)
 	}
@@ -31,7 +37,14 @@ func (itemStruct *ItemStruct) Create(ctx context.Context, client *ent.Client) er
 }
 
 func (itemStruct *ItemStruct) Update(ctx context.Context, client *ent.Client) error {
-	it, err := client.Item.UpdateOneID(itemStruct.Id).SetName(itemStruct.Name).SetNote(itemStruct.Note).SetAmount(itemStruct.Amount).Save(ctx)
+	it, err := client.Item.
+		UpdateOneID(itemStruct.Id).
+		SetName(itemStruct.Name).
+		SetNote(itemStruct.Note).
+		SetAmount(itemStruct.Amount).
+		SetStoreID(itemStruct.StoreId).
+		SetCategoryID(itemStruct.CategoryId).
+		Save(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to update the item: %w", err)
 	}
