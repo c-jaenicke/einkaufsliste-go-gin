@@ -79,6 +79,21 @@ func runHttp() {
 		}
 	})
 
+	router.GET("item/:id", func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Params.ByName("id"))
+		if err != nil {
+			logging.LogError("", err)
+			c.Status(http.StatusInternalServerError)
+		}
+
+		item, err := queries.GetItemById(context.Background(), server.db, id)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+		}
+		c.IndentedJSON(http.StatusOK, item)
+
+	})
+
 	router.DELETE("item/:id/delete", func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Params.ByName("id"))
 		if err != nil {
