@@ -1,7 +1,9 @@
 # einkaufsliste-go-gin
 
+
 A simple shopping list application written in Go, using a PostgreSQL database to store all entries.
 Serving a REST-API for the frontend.
+
 
 ## Frontend
 
@@ -101,7 +103,6 @@ Post    store/new
 Delete  store/:id/delete
 Put     (store/:id/update)
 ```
-
 #### Get
 
 ```json
