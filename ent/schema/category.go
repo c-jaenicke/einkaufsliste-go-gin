@@ -15,7 +15,7 @@ type Category struct {
 func (Category) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty().Unique(),
-		field.String("color").NotEmpty().Unique(),
+		field.String("color").NotEmpty(),
 	}
 }
 
