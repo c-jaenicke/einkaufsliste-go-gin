@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"shopping-list/ent"
+	"shopping-list/ent/category"
 	"shopping-list/ent/item"
 	"shopping-list/ent/store"
 	"shopping-list/pkg/logging"
@@ -128,7 +129,7 @@ func GetAllItemsByStoreId(ctx context.Context, client *ent.Client, storeId int) 
 
 // GetAllItemsByCategoryId returns all items that belong to a category
 func GetAllItemsByCategoryId(ctx context.Context, client *ent.Client, categoryId int) ([]*ent.Item, error) {
-	its, err := client.Item.Query().Where(item.HasStoreWith(store.ID(categoryId))).All(ctx)
+	its, err := client.Item.Query().Where(item.HasCategoryWith(category.ID(categoryId))).All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get items registered under store %d: %w", categoryId, err)
 	}

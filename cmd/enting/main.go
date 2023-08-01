@@ -61,8 +61,8 @@ func runHttp() {
 			if err != nil {
 				logging.LogError("", err)
 				c.Status(http.StatusInternalServerError)
-				items, err = queries.GetAllItemsByCategoryId(context.Background(), server.db, categoryIdInt)
 			}
+			items, err = queries.GetAllItemsByCategoryId(context.Background(), server.db, categoryIdInt)
 		} else {
 			items, _ = queries.GetAllItems(context.Background(), server.db)
 		}
