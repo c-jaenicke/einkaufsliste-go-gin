@@ -36,37 +36,60 @@ func runHttp() {
 	// TODO: merge both mappings together
 	// TODO: improve this mapping, right now you can only filter by one of the queries. This also requires creating a query method in the queries/item.go package to query by multiple attributes
 	router.GET("item/specific", func(c *gin.Context) {
-		storeId := c.Query("store")
-		categoryId := c.Query("category")
 		status := c.Query("status")
+		what := c.Query("type")
+		id := c.Query("id")
+		name := c.Query("name")
 
 		var err error
 		var items []*ent.Item
 
+		// if status query given -> query by status
+		// else if type == store
+		// 		id not empty -> query store by id
+		//		name not empty -> query store by name
+		// else if type == category
+		// 		id not empty -> query category by id
+		//		name not empty -> query category by name
+		// else -> get all items
+
 		if status != "" {
 			items, err = queries.GetAllItemsByStatus(context.Background(), server.db, status)
-			if err != nil {
-				logging.LogError("", err)
-				c.Status(http.StatusInternalServerError)
+		} else if what == "store" {
+
+			if id != "" {
+				storeIdInt, err := strconv.Atoi(id)
+				if err != nil {
+					logging.LogError("", err)
+					c.Status(http.StatusInternalServerError)
+				}
+
+				items, err = queries.GetAllItemsByStoreId(context.Background(), server.db, storeIdInt)
+			} else if name != "" {
+				items, err = queries.GetAllItemsByStoreName(context.Background(), server.db, name)
 			}
-		} else if storeId != "" {
-			storeIdInt, err := strconv.Atoi(storeId)
-			if err != nil {
-				logging.LogError("", err)
-				c.Status(http.StatusInternalServerError)
+
+		} else if what == "category" {
+
+			if id != "" {
+				categoryId, err := strconv.Atoi(id)
+				if err != nil {
+					logging.LogError("", err)
+					c.Status(http.StatusInternalServerError)
+				}
+
+				items, err = queries.GetAllItemsByCategoryId(context.Background(), server.db, categoryId)
+			} else if name != "" {
+				items, err = queries.GetAllItemsByCategoryName(context.Background(), server.db, name)
 			}
-			items, err = queries.GetAllItemsByStoreId(context.Background(), server.db, storeIdInt)
-		} else if categoryId != "" {
-			categoryIdInt, err := strconv.Atoi(categoryId)
-			if err != nil {
-				logging.LogError("", err)
-				c.Status(http.StatusInternalServerError)
-			}
-			items, err = queries.GetAllItemsByCategoryId(context.Background(), server.db, categoryIdInt)
+
 		} else {
 			items, _ = queries.GetAllItems(context.Background(), server.db)
 		}
 
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+		}
 		c.IndentedJSON(http.StatusOK, items)
 	})
 

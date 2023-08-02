@@ -127,6 +127,17 @@ func GetAllItemsByStoreId(ctx context.Context, client *ent.Client, storeId int) 
 	return its, nil
 }
 
+// GetAllItemsByStoreName returns all items that belong to a store
+func GetAllItemsByStoreName(ctx context.Context, client *ent.Client, name string) ([]*ent.Item, error) {
+	its, err := client.Item.Query().Where(item.HasStoreWith(store.Name(name))).All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get items registered under store %d: %w", name, err)
+	}
+
+	logging.LogInfo(fmt.Sprintf("found items registered under store %d: %d", name, len(its)))
+	return its, nil
+}
+
 // GetAllItemsByCategoryId returns all items that belong to a category
 func GetAllItemsByCategoryId(ctx context.Context, client *ent.Client, categoryId int) ([]*ent.Item, error) {
 	its, err := client.Item.Query().Where(item.HasCategoryWith(category.ID(categoryId))).All(ctx)
@@ -135,5 +146,16 @@ func GetAllItemsByCategoryId(ctx context.Context, client *ent.Client, categoryId
 	}
 
 	logging.LogInfo(fmt.Sprintf("found items registered under store %d: %d", categoryId, len(its)))
+	return its, nil
+}
+
+// GetAllItemsByCategoryName returns all items that belong to a category
+func GetAllItemsByCategoryName(ctx context.Context, client *ent.Client, name string) ([]*ent.Item, error) {
+	its, err := client.Item.Query().Where(item.HasCategoryWith(category.Name(name))).All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get items registered under store %d: %w", name, err)
+	}
+
+	logging.LogInfo(fmt.Sprintf("found items registered under store %d: %d", name, len(its)))
 	return its, nil
 }
