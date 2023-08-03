@@ -1,3 +1,4 @@
+# docker compose for local testing and simple deploy
 version: "3.9"
 
 services:
@@ -43,6 +44,10 @@ services:
     environment:
       # make sure to change values here! need to be the same as above!
       - DSS=host=einkaufsliste-db port=5432 user=user dbname=db password=pass sslmode=disable
+      # switch gin mode [debug|test|release]
+      - GIN_MODE=release
+      # set allowed origins for cors
+      - ALLOWED_ORIGINS=http://localhost:3000
     expose:
       - 8080
     depends_on:

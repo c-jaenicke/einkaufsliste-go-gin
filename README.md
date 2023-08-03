@@ -69,6 +69,10 @@ services:
     environment:
       # make sure to change values here! need to be the same as above!
       - DSS=host=einkaufsliste-db port=5432 user=<SET USERNAME HERE> dbname=<SET DB NAME HERE> password=<SET PASSWORD HERE> sslmode=disable
+      # switch gin mode [debug|test|release]
+      - GIN_MODE=release
+      # set allowed origins for cors, string of urls seperated by a ","
+      - ALLOWED_ORIGINS=http://localhost:3000,http://einkaufsliste-frontend:3000
     expose:
       - 8080
     depends_on:

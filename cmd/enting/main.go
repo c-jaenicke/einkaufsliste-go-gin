@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -11,19 +13,23 @@ import (
 	"shopping-list/pkg/logging"
 	"shopping-list/pkg/queries"
 	"strconv"
+	"strings"
 )
 
 type Server struct {
-	http *gin.Engine
-	db   *ent.Client
+	http    *gin.Engine
+	db      *ent.Client
+	envKeys *EnvKeys
 }
 
 var server Server
 
 func runHttp() {
-	gin.SetMode(gin.DebugMode)
+	// set up router here
 	router := gin.Default()
-	// TODO set cors rules and everything here
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: server.envKeys.AllowedOrigins,
+	}))
 	server.http = router
 
 	//
@@ -260,17 +266,8 @@ func runHttp() {
 func initDatabase() {
 	//dataSourceString := "host=einkaufsliste-db port=5432 user=user dbname=db password=pass sslmode=disable"
 
-	var dataSourceString string
-	var err error
-	dataSourceString, err = getDSSFromEnv()
-	if err != nil {
-		logging.LogError("failed to get dataSourceString from .env fiel: ", err)
-		// load dss from docker compose file
-		dataSourceString = os.Getenv("DSS")
-	}
-
-	client, err := ent.Open("postgres", dataSourceString)
-	logging.LogInfo("attempting connection to db under: " + dataSourceString)
+	client, err := ent.Open("postgres", server.envKeys.Dss)
+	logging.LogInfo("attempting connection to db under: " + server.envKeys.Dss)
 	if err != nil {
 		logging.LogPanic("failed to connect to db: %v", err)
 	}
@@ -311,16 +308,37 @@ func initCategories() {
 	}
 }
 
-func getDSSFromEnv() (string, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return "", err
+type EnvKeys struct {
+	Dss            string
+	AllowedOrigins []string
+}
+
+func getEnvKeys() (*EnvKeys, error) {
+	envKeys := &EnvKeys{}
+	envFile, err := godotenv.Read(".env")
+	if err == nil {
+		envKeys.Dss = envFile["DSS"]
+		envKeys.AllowedOrigins = strings.Split(envFile["ALLOWED_ORIGINS"], ",")
 	}
 
-	return os.Getenv("DSS"), nil
+	if os.Getenv("DSS") != "" {
+		envKeys.Dss = os.Getenv("DSS")
+	}
+
+	if os.Getenv("ALLOWED_ORIGINS") != "" {
+		envKeys.AllowedOrigins = strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",")
+	}
+
+	logging.LogInfo(fmt.Sprintf("env keys set to: %v", envKeys))
+	return envKeys, err
 }
 
 func main() {
+	var err error
+	server.envKeys, err = getEnvKeys()
+	if err != nil {
+		logging.LogError("error getting env keys:", err)
+	}
 	initDatabase()
 	runHttp()
 }

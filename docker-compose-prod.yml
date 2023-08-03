@@ -45,7 +45,9 @@ services:
     restart: unless-stopped
     environment:
       # make sure to change values here! need to be the same as above!
-      - DSS=host=einkaufsliste-db port=5432 user=<SET USERNAME HERE> dbname=<SET DB NAME HERE> password=<SET PASSWORD HERE> sslmode=disable
+      - DSS=host=einkaufsliste-db port=5432 user=<SET USERNAME HERE> dbname=<SET DB NAME HERE> password=<SET PASSWORD HERE> sslmode=disable]
+      # this switches gin to release mode
+      - GIN_MODE=release
     expose:
       - 8080
     networks:
