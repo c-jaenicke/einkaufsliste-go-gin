@@ -1,70 +1,68 @@
-# EINKAUFSLISTE-GO-GIN COMPOSE
+# docker compose for einkaufsliste PRODUCTION DEPLOYMENT
 version: "3.9"
 
 services:
-  # postgres db for saving items
   db:
     container_name: einkaufsliste-db
-    image: postgres:latest
-    restart: unless-stopped
     hostname: einkaufsliste-db
+    image: postgres:15
+    restart: unless-stopped
     environment:
-      # CHANGE VALUES HERE
-      - POSTGRES_PASSWORD=asdasd
-      - POSTGRES_USER=test
-      - POSTGRES_DB=shopping
+      # change values here!
+      - POSTGRES_PASSWORD=<SET PASSWORD HERE>
+      - POSTGRES_USER=<SET USERNAME HERE>
+      - POSTGRES_DB=<SET DB NAME HERE>
     volumes:
       - einkaufsliste-db-volume:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+    expose:
+      - 5432
     networks:
-      int-einkaufsliste-net:
-        ipv4_address: 172.26.1.3
+      - int-einkaufsliste-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d <SET DB NAME HERE> -U <SET USERNAME HERE>" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # einkaufsliste-vue frontend service
-  # https://github.com/c-jaenicke/einkaufsliste-vue
   frontend:
     container_name: einkaufsliste-frontend
-    image: einkaufsliste-vue:latest
+    hostname: einkaufsliste-frontend
+    image: einkaufsliste-svelte:latest
     restart: unless-stopped
-    #expose:
-    #  - 80
-    ports:
-      - 4220:80
+    environment:
+      - "ORIGIN=<SET DOMAIN HERE, 127.0.0.1:3000 WHEN TESTING>"
+    expose:
+      - 3000
     networks:
-      int-einkaufsliste-net:
-        ipv4_address: 172.26.1.2
-      default:
+      - int-einkaufsliste-net
+    # add labels here for traefik
 
-  # einkaufsliste-go-gin api service
-  # https://github.com/c-jaenicke/einkaufsliste-go-gin
-  api:
-    depends_on:
-      - db
+  # backend service, will only start after db is up
+  backend:
     container_name: einkaufsliste-api
     hostname: einkaufsliste-api
     image: einkaufsliste-rest:latest
     restart: unless-stopped
+    environment:
+      # make sure to change values here! need to be the same as above!
+      - DSS=host=einkaufsliste-db port=5432 user=<SET USERNAME HERE> dbname=<SET DB NAME HERE> password=<SET PASSWORD HERE> sslmode=disable
     expose:
       - 8080
-    environment:
-      - POSTGRES_URL=postgresql://test:asdasd@172.26.1.3:5432/shopping
-      - "ALLOWED_ORIGINS="
     networks:
-      int-einkaufsliste-net:
-        ipv4_address: 172.26.1.4
-      default:
+      - int-einkaufsliste-net
+      - int-docker-net
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
+  # save database in this docker volume
   einkaufsliste-db-volume:
 
 networks:
-  default:
-    driver: bridge
-  #  external: true
-  #  name: int-docker-net
+  # docket network for communication with reverse proxy
+  int-docker-net:
+    external: true
+    name: int-docker-net
+  # docket network for services to communicate with each other
   int-einkaufsliste-net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: "172.26.1.0/28"
