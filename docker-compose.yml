@@ -47,7 +47,7 @@ services:
       # switch gin mode [debug|test|release]
       - GIN_MODE=release
       # set allowed origins for cors
-      - ALLOWED_ORIGINS=http://localhost:3000
+      - ALLOWED_ORIGINS=http://localhost:3000,http://einkaufsliste-frontend:3000
     expose:
       - 8080
     depends_on:

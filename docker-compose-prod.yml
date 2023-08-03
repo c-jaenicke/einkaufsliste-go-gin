@@ -48,6 +48,8 @@ services:
       - DSS=host=einkaufsliste-db port=5432 user=<SET USERNAME HERE> dbname=<SET DB NAME HERE> password=<SET PASSWORD HERE> sslmode=disable]
       # this switches gin to release mode
       - GIN_MODE=release
+      # set allowed origins for cors
+      - ALLOWED_ORIGINS=http://localhost:3000,http://einkaufsliste-frontend:3000
     expose:
       - 8080
     networks:

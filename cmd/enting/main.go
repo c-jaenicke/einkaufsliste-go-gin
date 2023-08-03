@@ -321,11 +321,11 @@ func getEnvKeys() (*EnvKeys, error) {
 		envKeys.AllowedOrigins = strings.Split(envFile["ALLOWED_ORIGINS"], ",")
 	}
 
-	if os.Getenv("DSS") != "" {
+	if envKeys.Dss == "" {
 		envKeys.Dss = os.Getenv("DSS")
 	}
 
-	if os.Getenv("ALLOWED_ORIGINS") != "" {
+	if len(envKeys.AllowedOrigins) == 0 {
 		envKeys.AllowedOrigins = strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",")
 	}
 

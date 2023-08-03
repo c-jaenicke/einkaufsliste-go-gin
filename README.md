@@ -95,6 +95,10 @@ Following string has to be set, either in the `.env` file when building the dock
 DSS=host=<db container name> port=5432 user=<username> dbname=<db name> password=<password> sslmode=disable
 ```
 
+### Test Release Mode Locally
+
+Run using `GIN_MODE=release go run cmd/enting/main.go`
+
 ---
 
 ## REST-API
