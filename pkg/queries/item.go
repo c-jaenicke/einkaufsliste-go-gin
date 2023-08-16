@@ -20,37 +20,37 @@ type ItemStruct struct {
 	CategoryId int    `json:"category_id"`
 }
 
-func (itemStruct *ItemStruct) Create(ctx context.Context, client *ent.Client) error {
+func (item *ItemStruct) Create(ctx context.Context, client *ent.Client) error {
 	it, err := client.Item.
 		Create().
-		SetName(itemStruct.Name).
-		SetNote(itemStruct.Note).
-		SetAmount(itemStruct.Amount).
-		SetStoreID(itemStruct.StoreId).
-		SetCategoryID(itemStruct.CategoryId).
+		SetName(item.Name).
+		SetNote(item.Note).
+		SetAmount(item.Amount).
+		SetStoreID(item.StoreId).
+		SetCategoryID(item.CategoryId).
 		Save(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to create a new item: %w", err)
+		return fmt.Errorf("failed to create new item: %w", err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("created new item: %v", it))
+	logging.LogInfo(fmt.Sprintf("created new item successfully: %v", it))
 	return nil
 }
 
-func (itemStruct *ItemStruct) Update(ctx context.Context, client *ent.Client) error {
+func (item *ItemStruct) Update(ctx context.Context, client *ent.Client) error {
 	it, err := client.Item.
-		UpdateOneID(itemStruct.Id).
-		SetName(itemStruct.Name).
-		SetNote(itemStruct.Note).
-		SetAmount(itemStruct.Amount).
-		SetStoreID(itemStruct.StoreId).
-		SetCategoryID(itemStruct.CategoryId).
+		UpdateOneID(item.Id).
+		SetName(item.Name).
+		SetNote(item.Note).
+		SetAmount(item.Amount).
+		SetStoreID(item.StoreId).
+		SetCategoryID(item.CategoryId).
 		Save(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to update the item: %w", err)
+		return fmt.Errorf("failed to update item with id %d: %w", item.Id, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("updated the item: %v", it))
+	logging.LogInfo(fmt.Sprintf("updated item with id %d successfully: %v", item.Id, it))
 	return nil
 }
 
@@ -69,93 +69,93 @@ func SwitchItemStatus(ctx context.Context, client *ent.Client, id int) error {
 
 	it, err = client.Item.UpdateOneID(id).SetStatus(status).Save(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to update Status of item item: %w", err)
+		return fmt.Errorf("failed to switch status of item with id %d: %w", id, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("updated item Status: %v", it))
+	logging.LogInfo(fmt.Sprintf("switched status of item with id %d successfully: %v", id, it))
 	return nil
 }
 
-func (itemStruct *ItemStruct) Delete(ctx context.Context, client *ent.Client) error {
-	err := client.Item.DeleteOneID(itemStruct.Id).Exec(ctx)
+func (item *ItemStruct) Delete(ctx context.Context, client *ent.Client) error {
+	err := client.Item.DeleteOneID(item.Id).Exec(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to delete the item: %w", err)
+		return fmt.Errorf("failed to delete item wit id %d: %w", item.Id, err)
 	}
 
-	logging.LogInfo("item deleted")
+	logging.LogInfo(fmt.Sprintf("item with id %d deleted successfully", item.Id))
 	return nil
 }
 
 func GetItemById(ctx context.Context, client *ent.Client, id int) (*ent.Item, error) {
 	it, err := client.Item.Query().Where(item.ID(id)).Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find item : %w", err)
+		return nil, fmt.Errorf("failed to find item with id %d: %w", id, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found item: %w", it))
+	logging.LogInfo(fmt.Sprintf("found item with id %d successfully: %v", id, it))
 	return it, nil
 }
 
 func GetAllItems(ctx context.Context, client *ent.Client) ([]*ent.Item, error) {
-	its, err := client.Item.Query().Order(item.ByName()).All(ctx)
+	its, err := client.Item.Query().Order(item.ByStoreID(), item.ByCategoryID(), item.ByName()).All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all items: %w", err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("got items: %d", len(its)))
+	logging.LogInfo(fmt.Sprintf("got total of %d items successfully", len(its)))
 	return its, nil
 }
 
 func GetAllItemsByStatus(ctx context.Context, client *ent.Client, status string) ([]*ent.Item, error) {
-	its, err := client.Item.Query().Where(item.Status(status)).Order(item.ByName()).All(ctx)
+	its, err := client.Item.Query().Where(item.Status(status)).Order(item.ByStoreID(), item.ByCategoryID(), item.ByName()).All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get items with Status new: %w", err)
+		return nil, fmt.Errorf("failed to get all items with status %s: %w", status, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found items with Status new: %d", len(its)))
+	logging.LogInfo(fmt.Sprintf("found total of %d items with status %s successfully", len(its), status))
 	return its, nil
 }
 
 // GetAllItemsByStoreId returns all items that belong to a store
 func GetAllItemsByStoreId(ctx context.Context, client *ent.Client, storeId int) ([]*ent.Item, error) {
-	its, err := client.Item.Query().Where(item.HasStoreWith(store.ID(storeId))).Order(item.ByName()).All(ctx)
+	its, err := client.Item.Query().Where(item.HasStoreWith(store.ID(storeId))).Order(item.ByStoreID(), item.ByCategoryID(), item.ByName()).All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get items registered under store %d: %w", storeId, err)
+		return nil, fmt.Errorf("failed to get all items registered under store with id %d: %w", storeId, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found items registered under store %d: %d", storeId, len(its)))
+	logging.LogInfo(fmt.Sprintf("got total of %d items registered under store with id %d successfully", storeId, len(its)))
 	return its, nil
 }
 
 // GetAllItemsByStoreName returns all items that belong to a store
 func GetAllItemsByStoreName(ctx context.Context, client *ent.Client, name string) ([]*ent.Item, error) {
-	its, err := client.Item.Query().Where(item.HasStoreWith(store.Name(name))).Order(item.ByName()).All(ctx)
+	its, err := client.Item.Query().Where(item.HasStoreWith(store.Name(name))).Order(item.ByStoreID(), item.ByCategoryID(), item.ByName()).All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get items registered under store %d: %w", name, err)
+		return nil, fmt.Errorf("failed to get all items registered under store with name %s: %w", name, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found items registered under store %d: %d", name, len(its)))
+	logging.LogInfo(fmt.Sprintf("got total of %d items registered under store with name %s successfully", len(its), name))
 	return its, nil
 }
 
 // GetAllItemsByCategoryId returns all items that belong to a category
 func GetAllItemsByCategoryId(ctx context.Context, client *ent.Client, categoryId int) ([]*ent.Item, error) {
-	its, err := client.Item.Query().Where(item.HasCategoryWith(category.ID(categoryId))).Order(item.ByName()).All(ctx)
+	its, err := client.Item.Query().Where(item.HasCategoryWith(category.ID(categoryId))).Order(item.ByStoreID(), item.ByCategoryID(), item.ByName()).All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get items registered under store %d: %w", categoryId, err)
+		return nil, fmt.Errorf("failed to get all items registered under store with id %d: %w", categoryId, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found items registered under store %d: %d", categoryId, len(its)))
+	logging.LogInfo(fmt.Sprintf("got total of %d items registered under store with id %d successfully", len(its), categoryId))
 	return its, nil
 }
 
 // GetAllItemsByCategoryName returns all items that belong to a category
 func GetAllItemsByCategoryName(ctx context.Context, client *ent.Client, name string) ([]*ent.Item, error) {
-	its, err := client.Item.Query().Where(item.HasCategoryWith(category.Name(name))).Order(item.ByName()).All(ctx)
+	its, err := client.Item.Query().Where(item.HasCategoryWith(category.Name(name))).Order(item.ByStoreID(), item.ByCategoryID(), item.ByName()).All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get items registered under store %d: %w", name, err)
+		return nil, fmt.Errorf("failed to get items registered under store %s: %w", name, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found items registered under store %d: %d", name, len(its)))
+	logging.LogInfo(fmt.Sprintf("got total of %d items registered under store with name %s successfully", len(its), name))
 	return its, nil
 }

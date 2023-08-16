@@ -27,10 +27,10 @@ func (c *CategoryStruct) Create(ctx context.Context, client *ent.Client) error {
 func (c *CategoryStruct) Delete(ctx context.Context, client *ent.Client) error {
 	err := client.Category.DeleteOneID(c.Id).Exec(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to delete category: %w", err)
+		return fmt.Errorf("failed to delete category with id %d: %w", c.Id, err)
 	}
 
-	logging.LogInfo("category deleted successfully")
+	logging.LogInfo(fmt.Sprintf("category with id %d deleted successfully", c.Id))
 	return nil
 }
 
@@ -40,26 +40,26 @@ func GetCategoryByName(ctx context.Context, client *ent.Client, name string) (*e
 		return nil, fmt.Errorf("failed to find category with name %s", name)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found category successfully: %v", cat))
+	logging.LogInfo(fmt.Sprintf("found category with name %s successfully: %v", name, cat))
 	return cat, nil
 }
 
 func GetCategoryById(ctx context.Context, client *ent.Client, id int) (*ent.Category, error) {
 	cat, err := client.Category.Query().Where(category.ID(id)).Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find category with id %d", id)
+		return nil, fmt.Errorf("failed to find category with id %d: %w", id, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found cat with id %d successfully: %v", id, cat))
+	logging.LogInfo(fmt.Sprintf("found category with id %d successfully: %v", id, cat))
 	return cat, nil
 }
 
 func GetAllCategories(ctx context.Context, client *ent.Client) ([]*ent.Category, error) {
 	cats, err := client.Category.Query().All(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get all existing categories: %w", err)
+		return nil, fmt.Errorf("failed to get all categories: %w", err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found %d categories", len(cats)))
+	logging.LogInfo(fmt.Sprintf("got total of %d categories successfully", len(cats)))
 	return cats, nil
 }

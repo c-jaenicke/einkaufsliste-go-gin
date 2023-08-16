@@ -314,6 +314,7 @@ type EnvKeys struct {
 }
 
 func getEnvKeys() (*EnvKeys, error) {
+	// TODO: rework all of this, i dont even know anymore
 	envKeys := &EnvKeys{}
 	envFile, err := godotenv.Read(".env")
 	if err == nil {

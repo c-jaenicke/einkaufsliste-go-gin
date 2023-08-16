@@ -26,30 +26,30 @@ func (s *StoreStruct) Create(ctx context.Context, client *ent.Client) error {
 func (s *StoreStruct) Delete(ctx context.Context, client *ent.Client) error {
 	err := client.Store.DeleteOneID(s.Id).Exec(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to delete store id: %w", err)
+		return fmt.Errorf("failed to delete store with id %d: %w", s.Id, err)
 	}
 
-	logging.LogInfo("store deleted successfully")
+	logging.LogInfo(fmt.Sprintf("store with id %d deleted successfully", s.Id))
 	return nil
 }
 
 func GetStoreByName(ctx context.Context, client *ent.Client, name string) (*ent.Store, error) {
 	st, err := client.Store.Query().Where(store.Name(name)).Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find store with name %s", name)
+		return nil, fmt.Errorf("failed to get store with name %s: %w", name, err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found store successfully: %v", st))
+	logging.LogInfo(fmt.Sprintf("got store with name %s successfully: %v", name, st))
 	return st, nil
 }
 
 func GetStoreById(ctx context.Context, client *ent.Client, id int) (*ent.Store, error) {
 	store, err := client.Store.Query().Where(store.ID(id)).Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find store with id %d", id)
+		return nil, fmt.Errorf("failed to get store with id %d", id)
 	}
 
-	logging.LogInfo(fmt.Sprintf("found store successfully: %v", store))
+	logging.LogInfo(fmt.Sprintf("got store with id %d successfully: %v", id, store))
 	return store, nil
 }
 
@@ -59,6 +59,6 @@ func GetAllStores(ctx context.Context, client *ent.Client) ([]*ent.Store, error)
 		return nil, fmt.Errorf("failed to get all stores: %w", err)
 	}
 
-	logging.LogInfo(fmt.Sprintf("got stores: %d", len(sts)))
+	logging.LogInfo(fmt.Sprintf("got total of %d stores successfully", len(sts)))
 	return sts, nil
 }
