@@ -8,7 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
-	github.com/rs/zerolog v1.30.0
+	github.com/rs/zerolog v1.31.0
 )
 
 require (
