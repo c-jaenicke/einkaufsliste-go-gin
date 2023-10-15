@@ -4,9 +4,9 @@ package ent
 
 import (
 	"fmt"
-	"shopping-list/ent/category"
-	"shopping-list/ent/item"
-	"shopping-list/ent/store"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 	"strings"
 
 	"entgo.io/ent"

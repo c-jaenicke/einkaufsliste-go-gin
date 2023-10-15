@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"shopping-list/ent/item"
-	"shopping-list/ent/store"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"

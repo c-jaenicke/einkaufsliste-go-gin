@@ -4,8 +4,8 @@ package ent
 
 import (
 	"context"
-	"shopping-list/ent/category"
-	"shopping-list/ent/predicate"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"

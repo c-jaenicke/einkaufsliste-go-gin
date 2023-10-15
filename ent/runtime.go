@@ -3,10 +3,10 @@
 package ent
 
 import (
-	"shopping-list/ent/category"
-	"shopping-list/ent/item"
-	"shopping-list/ent/schema"
-	"shopping-list/ent/store"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/schema"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 )
 
 // The init function reads all schema descriptors with runtime code

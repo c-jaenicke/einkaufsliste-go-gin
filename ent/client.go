@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"log"
 
-	"shopping-list/ent/migrate"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/migrate"
 
-	"shopping-list/ent/category"
-	"shopping-list/ent/item"
-	"shopping-list/ent/store"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"

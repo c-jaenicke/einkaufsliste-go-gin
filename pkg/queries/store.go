@@ -3,9 +3,9 @@ package queries
 import (
 	"context"
 	"fmt"
-	"shopping-list/ent"
-	"shopping-list/ent/store"
-	"shopping-list/pkg/logging"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/pkg/logging"
 )
 
 type StoreStruct struct {

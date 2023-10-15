@@ -3,15 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/pkg/logging"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/pkg/queries"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"net/http"
 	"os"
-	"shopping-list/ent"
-	"shopping-list/pkg/logging"
-	"shopping-list/pkg/queries"
 	"strconv"
 	"strings"
 )

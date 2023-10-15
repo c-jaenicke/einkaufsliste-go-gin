@@ -5,7 +5,7 @@ package hook
 import (
 	"context"
 	"fmt"
-	"shopping-list/ent"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent"
 )
 
 // The CategoryFunc type is an adapter to allow the use of ordinary

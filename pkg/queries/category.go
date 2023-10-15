@@ -3,9 +3,9 @@ package queries
 import (
 	"context"
 	"fmt"
-	"shopping-list/ent"
-	"shopping-list/ent/category"
-	"shopping-list/pkg/logging"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/pkg/logging"
 )
 
 type CategoryStruct struct {

@@ -3,11 +3,11 @@ package queries
 import (
 	"context"
 	"fmt"
-	"shopping-list/ent"
-	"shopping-list/ent/category"
-	"shopping-list/ent/item"
-	"shopping-list/ent/store"
-	"shopping-list/pkg/logging"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/pkg/logging"
 )
 
 type ItemStruct struct {
