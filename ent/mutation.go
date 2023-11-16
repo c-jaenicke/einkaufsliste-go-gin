@@ -6,14 +6,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/predicate"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 	"sync"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/predicate"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 )
 
 const (
@@ -887,6 +887,7 @@ func (m *ItemMutation) ResetCategoryID() {
 // ClearStore clears the "store" edge to the Store entity.
 func (m *ItemMutation) ClearStore() {
 	m.clearedstore = true
+	m.clearedFields[item.FieldStoreID] = struct{}{}
 }
 
 // StoreCleared reports if the "store" edge to the Store entity was cleared.
@@ -913,6 +914,7 @@ func (m *ItemMutation) ResetStore() {
 // ClearCategory clears the "category" edge to the Category entity.
 func (m *ItemMutation) ClearCategory() {
 	m.clearedcategory = true
+	m.clearedFields[item.FieldCategoryID] = struct{}{}
 }
 
 // CategoryCleared reports if the "category" edge to the Category entity was cleared.

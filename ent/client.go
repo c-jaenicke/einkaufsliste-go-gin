@@ -7,17 +7,17 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"reflect"
 
 	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/migrate"
-
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 )
 
 // Client is the client that holds all ent builders.
@@ -114,11 +114,14 @@ func Open(driverName, dataSourceName string, options ...Option) (*Client, error)
 	}
 }
 
+// ErrTxStarted is returned when trying to start a new transaction from a transactional client.
+var ErrTxStarted = errors.New("ent: cannot start a transaction within a transaction")
+
 // Tx returns a new transactional client. The provided context
 // is used until the transaction is committed or rolled back.
 func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	if _, ok := c.driver.(*txDriver); ok {
-		return nil, errors.New("ent: cannot start a transaction within a transaction")
+		return nil, ErrTxStarted
 	}
 	tx, err := newTx(ctx, c.driver)
 	if err != nil {
@@ -239,6 +242,21 @@ func (c *CategoryClient) Create() *CategoryCreate {
 
 // CreateBulk returns a builder for creating a bulk of Category entities.
 func (c *CategoryClient) CreateBulk(builders ...*CategoryCreate) *CategoryCreateBulk {
+	return &CategoryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CategoryClient) MapCreateBulk(slice any, setFunc func(*CategoryCreate, int)) *CategoryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CategoryCreateBulk{err: fmt.Errorf("calling to CategoryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CategoryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &CategoryCreateBulk{config: c.config, builders: builders}
 }
 
@@ -373,6 +391,21 @@ func (c *ItemClient) Create() *ItemCreate {
 
 // CreateBulk returns a builder for creating a bulk of Item entities.
 func (c *ItemClient) CreateBulk(builders ...*ItemCreate) *ItemCreateBulk {
+	return &ItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ItemClient) MapCreateBulk(slice any, setFunc func(*ItemCreate, int)) *ItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ItemCreateBulk{err: fmt.Errorf("calling to ItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &ItemCreateBulk{config: c.config, builders: builders}
 }
 
@@ -523,6 +556,21 @@ func (c *StoreClient) Create() *StoreCreate {
 
 // CreateBulk returns a builder for creating a bulk of Store entities.
 func (c *StoreClient) CreateBulk(builders ...*StoreCreate) *StoreCreateBulk {
+	return &StoreCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *StoreClient) MapCreateBulk(slice any, setFunc func(*StoreCreate, int)) *StoreCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &StoreCreateBulk{err: fmt.Errorf("calling to StoreClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*StoreCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &StoreCreateBulk{config: c.config, builders: builders}
 }
 

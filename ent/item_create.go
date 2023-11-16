@@ -6,12 +6,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 )
 
 // ItemCreate is the builder for creating a Item entity.
@@ -243,11 +243,15 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 // ItemCreateBulk is the builder for creating many Item entities in bulk.
 type ItemCreateBulk struct {
 	config
+	err      error
 	builders []*ItemCreate
 }
 
 // Save creates the Item entities in the database.
 func (icb *ItemCreateBulk) Save(ctx context.Context) ([]*Item, error) {
+	if icb.err != nil {
+		return nil, icb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(icb.builders))
 	nodes := make([]*Item, len(icb.builders))
 	mutators := make([]Mutator, len(icb.builders))

@@ -6,11 +6,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 )
 
 // StoreCreate is the builder for creating a Store entity.
@@ -135,11 +135,15 @@ func (sc *StoreCreate) createSpec() (*Store, *sqlgraph.CreateSpec) {
 // StoreCreateBulk is the builder for creating many Store entities in bulk.
 type StoreCreateBulk struct {
 	config
+	err      error
 	builders []*StoreCreate
 }
 
 // Save creates the Store entities in the database.
 func (scb *StoreCreateBulk) Save(ctx context.Context) ([]*Store, error) {
+	if scb.err != nil {
+		return nil, scb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(scb.builders))
 	nodes := make([]*Store, len(scb.builders))
 	mutators := make([]Mutator, len(scb.builders))

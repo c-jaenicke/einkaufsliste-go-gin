@@ -198,11 +198,23 @@ Status can be `new` or `bought`.
 #### Post / Put
 
 ```json
-    {
+{
   "name": "STRING",
   "note": "STRING",
   "amount": "NUMBER",
   "store_id": "NUMBER",
   "category_id": "NUMBER"
+}
+```
+
+### Pet
+
+#### Get
+
+```json
+{
+	"fed_at": "UNIX TIME AS INT64",
+	"amount_fed": "STRING",
+	"is_inside": "BOOLEAN"
 }
 ```

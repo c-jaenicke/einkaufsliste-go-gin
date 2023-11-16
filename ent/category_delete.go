@@ -4,12 +4,12 @@ package ent
 
 import (
 	"context"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/predicate"
 )
 
 // CategoryDelete is the builder for deleting a Category entity.

@@ -6,11 +6,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
 )
 
 // CategoryCreate is the builder for creating a Category entity.
@@ -153,11 +153,15 @@ func (cc *CategoryCreate) createSpec() (*Category, *sqlgraph.CreateSpec) {
 // CategoryCreateBulk is the builder for creating many Category entities in bulk.
 type CategoryCreateBulk struct {
 	config
+	err      error
 	builders []*CategoryCreate
 }
 
 // Save creates the Category entities in the database.
 func (ccb *CategoryCreateBulk) Save(ctx context.Context) ([]*Category, error) {
+	if ccb.err != nil {
+		return nil, ccb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(ccb.builders))
 	nodes := make([]*Category, len(ccb.builders))
 	mutators := make([]Mutator, len(ccb.builders))

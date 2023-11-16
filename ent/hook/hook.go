@@ -5,6 +5,7 @@ package hook
 import (
 	"context"
 	"fmt"
+
 	"github.com/c-jaenicke/einkaufsliste-go-gin/ent"
 )
 

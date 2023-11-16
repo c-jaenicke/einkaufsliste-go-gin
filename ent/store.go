@@ -4,11 +4,11 @@ package ent
 
 import (
 	"fmt"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 	"strings"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 )
 
 // Store is the model entity for the Store schema.

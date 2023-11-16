@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/c-jaenicke/einkaufsliste-go-gin/ent"
 	"github.com/c-jaenicke/einkaufsliste-go-gin/pkg/logging"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/pkg/pet"
 	"github.com/c-jaenicke/einkaufsliste-go-gin/pkg/queries"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Server struct {
@@ -23,6 +25,8 @@ type Server struct {
 }
 
 var server Server
+
+var petObj pet.Pet
 
 func runHttp() {
 	// set up router here
@@ -254,6 +258,24 @@ func runHttp() {
 		c.Status(http.StatusOK)
 	})
 
+	//
+	// PET MAPPINGS
+	//
+	router.GET("pet", func(c *gin.Context) {
+		c.IndentedJSON(http.StatusOK, petObj)
+	})
+
+	router.POST("pet/inside", func(c *gin.Context) {
+		petObj.UpdateInside()
+		c.IndentedJSON(http.StatusOK, petObj)
+	})
+
+	router.POST("pet/fed/:amount", func(c *gin.Context) {
+		amount := c.Params.ByName("amount")
+		petObj.Fed(amount)
+		c.IndentedJSON(http.StatusOK, petObj)
+	})
+
 	// TODO: possible update mapping here
 
 	err := server.http.Run(":8080")
@@ -341,5 +363,10 @@ func main() {
 		logging.LogError("error getting env keys:", err)
 	}
 	initDatabase()
+	petObj = pet.Pet{
+		FedAt:     time.Now().Unix(),
+		AmountFed: "",
+		IsInside:  false,
+	}
 	runHttp()
 }

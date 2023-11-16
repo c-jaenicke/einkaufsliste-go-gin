@@ -2,9 +2,9 @@
 
 package runtime
 
-// The schema-stitching logic is generated in shopping-list/ent/runtime.go
+// The schema-stitching logic is generated in github.com/c-jaenicke/einkaufsliste-go-gin/ent/runtime.go
 
 const (
-	Version = "v0.12.3"                                         // Version of ent codegen.
-	Sum     = "h1:N5lO2EOrHpCH5HYfiMOCHYbo+oh5M8GjT0/cx5x6xkk=" // Sum of ent codegen.
+	Version = "v0.12.4"                                         // Version of ent codegen.
+	Sum     = "h1:LddPnAyxls/O7DTXZvUGDj0NZIdGSu317+aoNLJWbD8=" // Sum of ent codegen.
 )

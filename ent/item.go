@@ -4,13 +4,13 @@ package ent
 
 import (
 	"fmt"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 	"strings"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/item"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 )
 
 // Item is the model entity for the Item schema.

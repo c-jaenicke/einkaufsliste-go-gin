@@ -4,12 +4,12 @@ package ent
 
 import (
 	"context"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/predicate"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/predicate"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/store"
 )
 
 // StoreDelete is the builder for deleting a Store entity.

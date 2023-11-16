@@ -4,13 +4,13 @@ package enttest
 
 import (
 	"context"
+
 	"github.com/c-jaenicke/einkaufsliste-go-gin/ent"
 	// required by schema hooks.
 	_ "github.com/c-jaenicke/einkaufsliste-go-gin/ent/runtime"
 
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/migrate"
-
 	"entgo.io/ent/dialect/sql/schema"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/migrate"
 )
 
 type (

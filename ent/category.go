@@ -4,11 +4,11 @@ package ent
 
 import (
 	"fmt"
-	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
 	"strings"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/c-jaenicke/einkaufsliste-go-gin/ent/category"
 )
 
 // Category is the model entity for the Category schema.
