@@ -5,14 +5,12 @@ FROM golang:1.20 as build-stage
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-
-COPY cmd/enting/ ./
-COPY pkg/ ./pkg/
-COPY ent/ ./ent/
-RUN CGO_ENABLED=0 GOOS=linux go build -o /enting
+# copy all files in directory
+COPY . .
+# get and update packages
+RUN go mod tidy
+# build go app
+RUN CGO_ENABLED=0 GOOS=linux go build -o /enting cmd/enting/main.go
 
 ## DEPLOY
 FROM alpine:latest
