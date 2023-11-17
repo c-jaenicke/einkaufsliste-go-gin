@@ -364,9 +364,11 @@ func main() {
 	}
 	initDatabase()
 	petObj = pet.Pet{
+		Name:      "",
 		FedAt:     time.Now().Unix(),
 		AmountFed: "",
 		IsInside:  false,
+		InsideAt:  time.Now().Unix(),
 	}
 	runHttp()
 }
