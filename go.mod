@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.5
 
 require (
-	entgo.io/ent v0.12.5
+	entgo.io/ent v0.13.0
 	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
@@ -14,7 +14,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.16.0 // indirect
+	ariga.io/atlas v0.19.1-0.20240203083654-5948b60a8e43 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect
