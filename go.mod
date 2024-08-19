@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.5
 
 require (
-	entgo.io/ent v0.13.1
+	entgo.io/ent v0.14.0
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/joho/godotenv v1.5.1
