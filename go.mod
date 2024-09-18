@@ -1,11 +1,8 @@
 module github.com/c-jaenicke/einkaufsliste-go-gin
 
 go 1.21
-
-toolchain go1.21.5
-
 require (
-	entgo.io/ent v0.14.0
+	entgo.io/ent v0.14.1
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/joho/godotenv v1.5.1
@@ -45,9 +42,9 @@ require (
 	github.com/zclconf/go-cty v1.14.1 // indirect
 	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/mod v0.15.0 // indirect
+	golang.org/x/mod v0.20.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
